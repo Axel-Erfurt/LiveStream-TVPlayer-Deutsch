@@ -1,7 +1,7 @@
 #!/bin/sh
 cd ~/.local/share/
 echo "TVPlayer herunterladen ..."
-wget https://github.com/Axel-Erfurt/LiveStream-TVPlayer/archive/master.zip
+wget https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/archive/master.zip
 echo "TVPlayer entpacken"
 unzip -o master.zip
 echo "zip Datei wird entfernt"
