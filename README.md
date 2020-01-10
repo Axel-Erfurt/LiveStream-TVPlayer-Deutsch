@@ -78,17 +78,17 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 
 ### Shortcuts
 
-Q 	Beenden
-F 	Fullscreen an / aus
-M 	Stummschalten an / aus
-C 	Einstellungen Farbe / Helligkeit / Kontrast
-U 	URL aus der Zwichenablage abspielen
-H 	Mauszeiger an / aus
-R 	Aufnahme starten mit Timer (90m bedeutet 90 Minuten)
-W 	Aufnahme starten ohne Timer
-S 	Aufnahme stoppen
-↑ 	lauter
-↓ 	leiser 
+- Q 	Beenden
+- F 	Fullscreen an / aus
+- M 	Stummschalten an / aus
+- C 	Einstellungen Farbe / Helligkeit / Kontrast
+- U 	URL aus der Zwichenablage abspielen
+- H 	Mauszeiger an / aus
+- R 	Aufnahme starten mit Timer (90m bedeutet 90 Minuten)
+- W 	Aufnahme starten ohne Timer
+- S 	Aufnahme stoppen
+- ↑ 	lauter
+- ↓ 	leiser 
 
 [Download 64bit App Ubuntu/Mint 🇩🇪](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
 
