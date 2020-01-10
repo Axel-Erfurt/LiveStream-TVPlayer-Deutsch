@@ -4,7 +4,7 @@ import requests
 import os
 import sys
 
-channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika"]
+channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika", "orf"]
 chList = []
 urlList = []
 root = sys.argv[1]
