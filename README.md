@@ -1,5 +1,7 @@
 # LiveStream-TVPlayer-Deutsch
 
+![screenshot](https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/blob/master/screenshot.png)
+
 TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 ### Voraussetzungen
