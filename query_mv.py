@@ -4,7 +4,7 @@ import requests
 import os
 import sys
 
-channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat"]
+channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika"]
 chList = []
 urlList = []
 root = sys.argv[1]
@@ -28,6 +28,10 @@ def getURL(name):
         url = response_json['result']['results'][x]['url_video']
         if ".m3u8" in url and "3Sat" in title:
             chList.append(title.replace(".", " ").replace(' Livestream', ''))
+            urlList.append(url)
+        if ".m3u8" in url and "KiKA" in title:
+            title = "kika"
+            chList.append(title)
             urlList.append(url)
         if ".m3u8" in url and name.upper() in title:
             chList.append(title.replace(".", " ").replace(' Livestream', ''))
