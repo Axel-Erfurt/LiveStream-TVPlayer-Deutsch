@@ -9,6 +9,6 @@ rm master.zip
 chmod +x ~/.local/share/LiveStream-TVPlayer-master/mediaterm
 cp ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop ~/.local/share/applications
 echo "Senderliste aktualisieren"
-python3 ~/.local/share/LiveStream-TVPlayer-master/Sender_aktualisieren.py ~/.local/share/LiveStream-TVPlayer-master
+python3 ~/.local/share/LiveStream-TVPlayer-master/query_mv.py ~/.local/share/LiveStream-TVPlayer-master
 echo "TVPlayer wird gestartet ..."
 python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
