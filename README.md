@@ -31,7 +31,7 @@ zur Aufnahme des aktuellen Senders (optional)
 
 im Terminal folgenden Befehl ausführen:
 
-> wget 'https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer/master/TVPlayerInstall.sh' -O ~/Downloads/TVPlayerInstall.sh && chmod +x ~/Downloads/TVPlayerInstall.sh && ~/Downloads/TVPlayerInstall.sh 
+> wget 'https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayerInstall.sh' -O ~/Downloads/TVPlayerInstall.sh && chmod +x ~/Downloads/TVPlayerInstall.sh && ~/Downloads/TVPlayerInstall.sh
 
 Damit wird die aktuelle Version von github heruntergeladen und im Ordner ~/.local/share/ gespeichert.
 
