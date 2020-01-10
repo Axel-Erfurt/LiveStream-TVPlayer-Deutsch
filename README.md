@@ -96,4 +96,4 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 
 * letztes Update 10.Januar 2020 18:05
 
-entpacken und TVPLayer2 im entpackten Ordner starten.
+entpacken und TVPlayer2 im entpackten Ordner starten.
