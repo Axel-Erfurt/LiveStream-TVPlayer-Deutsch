@@ -94,4 +94,6 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 
 [Download 64bit App Ubuntu/Mint 🇩🇪](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
 
+* letztes Update 10.Januar 2020 18:05
+
 entpacken und TVPLayer2 im entpackten Ordner starten.
