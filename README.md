@@ -89,3 +89,7 @@ W 	Aufnahme starten ohne Timer
 S 	Aufnahme stoppen
 ↑ 	lauter
 ↓ 	leiser 
+
+[Download 64bit App Ubuntu/Mint 🇩🇪](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
+
+entpacken und TVPLayer2 im entpackten Ordner starten.
