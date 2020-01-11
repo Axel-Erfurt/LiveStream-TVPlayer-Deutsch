@@ -60,7 +60,9 @@ Im Kontextmenu erscheinen die Sender in SD Auflösung (640x360). Im Submenu HD e
 
 Wenn streamlink vorhanden ist kann mit oder ohne Timer aufgenommen werden.
 
-Im Ordner ~/.local/share/LiveStream-TVPlayer-master/tv_listen können m3u8 Playlisten hinzugefügt werden.
+Im Ordner ~/.local/share/LiveStream-TVPlayer-master/tv_listen können m3u8 Playlisten hinzugefügt ode entfernt werden.
+
+* *Zum Entfernen eines Sender einfach die m3u8 Datei löschen.* *
 
 Die m3u8 Datei sollte das übliche Format haben.
 
