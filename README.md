@@ -1,4 +1,4 @@
-# LiveStream-TVPlayer-Deutsch
+# LiveStream-TVPlayer-Deutsch 🇩🇪
 
 ![screenshot](https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/blob/master/screenshot.png)
 
