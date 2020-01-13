@@ -5,7 +5,7 @@ Name=TVPlayer2
 Comment=Fernsehen
 Icon=video-television
 Exec=sh -c  "python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py"
-Categories=Video
+Categories=multimedia-video-player
 StartupNotify=True
 Terminal=False
 
