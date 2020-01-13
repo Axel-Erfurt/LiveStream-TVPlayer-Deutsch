@@ -48,9 +48,11 @@ oder im Terminal mit
 
 ### Deinstallation
 
-Dazu im Terminal folgendes eingeben
+Dazu im Terminal folgende Befehle ausführen
 
 > cd ~/.local/share/ && rm -rf LiveStream-TVPlayer-master 
+
+> cd ~/.local/share/applications && rm TVPlayer2.desktop
 
 ### Bedienung
 
