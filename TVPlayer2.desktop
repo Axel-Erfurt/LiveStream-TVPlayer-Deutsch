@@ -3,9 +3,9 @@ Version=1.0
 Type=Application
 Name=TVPlayer2
 Comment=Fernsehen
-Icon=video-television
+Icon=multimedia-video-player
 Exec=sh -c  "python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py"
-Categories=multimedia-video-player
+Categories=Video
 StartupNotify=True
 Terminal=False
 
