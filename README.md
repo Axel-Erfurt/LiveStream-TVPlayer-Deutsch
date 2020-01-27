@@ -103,3 +103,7 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 * letztes Update 10.Januar 2020 18:05
 
 entpacken und TVPlayer2 im entpackten Ordner starten.
+
+__TV Programm__
+
+hoerzu_tag.py ist ein Python Script das die TV Programmdaten von [Hörzu](http://mobile.hoerzu.de/programbystation) lädt und dann aufbereitet im Browser zeigt.
