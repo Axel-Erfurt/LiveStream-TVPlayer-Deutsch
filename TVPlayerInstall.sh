@@ -37,9 +37,9 @@ fi
 desktopfile=$HOME/.local/share/applications/TVPlayer2.desktop
 if [ -e "$desktopfile" ]
 then
-    echo "$desktopfile already exists"
+    echo "$desktopfile ist schon vorhanden"
 else
-    echo "$desktopfile not found"
+    echo "$desktopfile nicht gefunden"
     cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 fi
 rm ~/Downloads/TVPlayerInstall.sh
