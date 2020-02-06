@@ -118,13 +118,14 @@ class MainWindow(QMainWindow):
         chFolder = self.root + "/tv_listen/"
         pList = [f for f in os.listdir(chFolder) if os.path.isfile(os.path.join(chFolder, f))]
         menuList = []
-        
+        the_folder = self.root + "/tv_listen/"
         for x in range(len(pList)):
             ft = f"{chFolder}{pList[x]}"
             name = os.path.splitext(os.path.basename(ft))[0]
             text = open(ft, 'r').read()
-            
             mlist = text.splitlines()
+            ### temporary added
+            menuList.append(f"{name.upper()} dyn.,file://{the_folder}{pList[x]}")
             for x in range(len(mlist)):
                 if "RESOLUTION=640" in mlist[x]:
                     menuList.append(f"{name.upper()},{mlist[x+1]}")
@@ -153,19 +154,25 @@ class MainWindow(QMainWindow):
     def makeMenu(self):
         pList = self.getMenu()
         hdm = self.c_menu.addMenu(QIcon.fromTheme("computer"), "HD")
+        ddm = self.c_menu.addMenu(QIcon.fromTheme("computer"), "dynamisch") 
         for playlist in pList:
             name = playlist.partition(",")[0]
             url = playlist.partition(",")[2]
-            if not "HD" in name:
+            if not "HD" in name and not "dyn" in name:
                 a = QAction(name, self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
                 rm = self.c_menu.addAction(a)
-            else:
+            elif "HD" in name:
                 a = QAction(name, self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
                 rm = hdm.addAction(a)
+            elif "dyn" in name:
+                a = QAction(name.replace(" dyn.", ""), self, triggered=self.playTV)
+                a.setIcon(QIcon.fromTheme(mybrowser))
+                a.setData(url)
+                rm = ddm.addAction(a)                
 
         a = QAction(QIcon.fromTheme(mybrowser), "Sport1 Live", self, triggered=self.play_Sport1)
         self.c_menu.addAction(a)
