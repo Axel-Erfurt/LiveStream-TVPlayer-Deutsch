@@ -16,6 +16,7 @@ from time import sleep
 import subprocess
 import sys
 from requests import get as getURL
+import hoerzuTag
 
 mytv = "tv-symbolic"
 mybrowser = "video-television"
@@ -334,6 +335,9 @@ class MainWindow(QMainWindow):
 
     def handleAbout(self):
         msg = QMessageBox.about(self, "TVPlayer2", self.myinfo)
+        
+    def tv_programm(self):
+        self.tvpr = hoerzuTag.TVPR()
 
     def handleFullscreen(self):
         if self.fullscreen == True:
@@ -367,6 +371,8 @@ class MainWindow(QMainWindow):
             self.handleQuit()
         elif e.key() == Qt.Key_H:
             self.handleCursor()
+        elif e.key() == Qt.Key_P:
+            self.tv_programm()
         elif e.key() == Qt.Key_F:
             self.handleFullscreen()
         elif e.key() == Qt.Key_M:
@@ -431,6 +437,9 @@ class MainWindow(QMainWindow):
             self.channels_menu.addSeparator()
 
         self.channels_menu.addSeparator()
+        
+        tvpr_action = QAction(QIcon.fromTheme("browser"), "TV Programm des Tages (p)", triggered = self.tv_programm, shortcut = "p")
+        self.channels_menu.addAction(tvpr_action)
 
         about_action = QAction(QIcon.fromTheme("help-about"), "Info (i)", triggered = self.handleAbout, shortcut = "i")
         self.channels_menu.addAction(about_action)
