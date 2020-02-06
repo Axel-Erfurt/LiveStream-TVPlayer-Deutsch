@@ -158,12 +158,12 @@ class MainWindow(QMainWindow):
         for playlist in pList:
             name = playlist.partition(",")[0]
             url = playlist.partition(",")[2]
-            if not "HD" in name and not "dyn" in name:
+            if not "HD" in name and not "dyn" in name and not "ZDF" in name:
                 a = QAction(name, self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
                 rm = self.c_menu.addAction(a)
-            elif "HD" in name:
+            elif "HD" in name and not "ZDF" in name:
                 a = QAction(name, self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
@@ -172,7 +172,9 @@ class MainWindow(QMainWindow):
                 a = QAction(name.replace(" dyn.", ""), self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
-                rm = ddm.addAction(a)                
+                rm = ddm.addAction(a)
+            if "dyn" in name  and "ZDF" in name:
+                self.c_menu.addAction(a)
 
         a = QAction(QIcon.fromTheme(mybrowser), "Sport1 Live", self, triggered=self.play_Sport1)
         self.c_menu.addAction(a)
