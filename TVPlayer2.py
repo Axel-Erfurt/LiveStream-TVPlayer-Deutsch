@@ -205,7 +205,7 @@ class MainWindow(QMainWindow):
 
     def is_tool(self, name):
         tool = QStandardPaths.findExecutable(name)
-        if tool is not "":
+        if tool != "":
             print(tool)
             return True
         else:
