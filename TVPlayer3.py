@@ -553,6 +553,8 @@ class MainWindow(QMainWindow):
             ch = "alpha"
         if ch =="SR":
             ch = "swr"
+        if "ONE" in ch:
+            ch = "one"
         tp = Tagesprogramm()
         msg = tp.getProgramm(ch)
         if not msg == None:
