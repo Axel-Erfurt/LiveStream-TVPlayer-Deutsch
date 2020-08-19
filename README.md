@@ -100,6 +100,10 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 - ↑ 	lauter
 - ↓ 	leiser 
 
+### neue Version
+
+TVPlayer3.py ist eine neue Version in der Testphase, mehr dazu [hier](https://forum.ubuntuusers.de/post/9181102/) 
+
 [Download 64bit App Ubuntu/Mint 🇩🇪](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
 
 * letztes Update 10.Januar 2020 18:05
