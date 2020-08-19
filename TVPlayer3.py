@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #############################################################################
-from PyQt5.QtCore import (QPoint, Qt, QUrl, QProcess, QFile, QDir, 
-                          QStandardPaths, QFileInfo, QCoreApplication)
+from PyQt5.QtCore import (QPoint, Qt, QUrl, QProcess, QFile, QDir, QSettings, 
+                          QStandardPaths, QFileInfo, QCoreApplication, QRect)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox, 
                              QMenu, QInputDialog, QLineEdit, QFileDialog, QLabel, 
@@ -57,7 +57,6 @@ class Tagesprogramm():
                     self.titleList.append(f"{start} {title}")
                     
     def getProgramm(self, channel):
-        #for ch in self.dictList:
         if channel.lower() in self.dictList:
             ch = channel.lower()
             self.titleList.append(f"{ch.upper()} Programm\n")
@@ -115,6 +114,7 @@ class URLGrabber():
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.settings = QSettings("TVPlayer2", "settings")
         mg = URLGrabber()
         print("hole aktuelle Stream URLs")
         self.pList = mg.grab_urls()
@@ -148,7 +148,7 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.setVolume(90)
         print("Volume:", self.mediaPlayer.volume())
         self.mediaPlayer.error.connect(self.handleError)
-        self.mediaPlayer.bufferStatusChanged.connect(self.getBufferStatus)
+        #self.mediaPlayer.bufferStatusChanged.connect(self.getBufferStatus)
         self.setAcceptDrops(True)
 
         self.videoWidget = QVideoWidget(self)
@@ -179,10 +179,6 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 480, 480 / ratio)
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-    
-        screenGeometry = QApplication.desktop().availableGeometry()
-        screenGeo = screenGeometry.topLeft()
-        self.move(screenGeo)
 
         self.setWindowTitle("TV Player & Recorder")
         self.setWindowIcon(QIcon.fromTheme("multimedia-video-player"))
@@ -220,10 +216,39 @@ class MainWindow(QMainWindow):
             self.msgbox("streamlink nicht gefunden\nkeine Aufnahme möglich")
             
         self.createMenu()
-        if len(self.own_list) > 0:
-            self.play_own(0)
+        self.readSettings()
+
+            
+    def readSettings(self):
+        print("lese Konfigurationsdatei ...")
+        if self.settings.contains("geometry"):
+            self.setGeometry(self.settings.value("geometry", QRect(26, 26, 200, 200)))
         else:
-            self.playARD()
+            self.setGeometry(100, 100, 480, 480 / ratio)
+        if self.settings.contains("lastUrl") and self.settings.contains("lastName"):
+            self.link = self.settings.value("lastUrl")
+            self.channelname = self.settings.value("lastName")
+            self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
+            self.mediaPlayer.play()
+            print("aktueller Sender:", self.channelname, "\nURL:", self.link)
+        else:
+            if len(self.own_list) > 0:
+                self.play_own(0)
+            else:
+                self.playARD()
+        if self.settings.contains("volume"):
+            vol = self.settings.value("volume")
+            print("setze Lautstärke auf", vol)
+            self.mediaPlayer.setVolume(int(vol))
+
+                
+    def writeSettings(self):
+        print("schreibe Konfigurationsdatei ...")
+        self.settings.setValue("geometry", self.geometry())
+        self.settings.setValue("lastUrl", self.link)
+        self.settings.setValue("lastName", self.channelname)
+        self.settings.setValue("volume", self.mediaPlayer.volume())
+        self.settings.sync()
         
     def mouseDoubleClickEvent(self, event):
         self.handleFullscreen()
@@ -412,7 +437,6 @@ class MainWindow(QMainWindow):
                 QFile(self.outfile).remove
             else:
                 print("Die Datei " + self.outfile + " existiert nicht") 
-            #self.showLabel()
             infotext = '<i>temporäre Aufnahme in Datei: /tmp/TV.mp4</i> \
                             <br><b><font color="#a40000";>Speicherort und Dateiname werden nach Beenden der Aufnahme festgelegt.</font></b> \
                             <br><br><b>Beispiel:</b><br>60s (60 Sekunden)<br>120m (120 Minuten)'
@@ -476,7 +500,6 @@ class MainWindow(QMainWindow):
     def rec_finished(self):
         print("Aufnahme beendet")
         self.process.kill()
-#        self.timer_finished()
 
     def timer_finished(self):
         print("Timer beendet")
@@ -559,6 +582,7 @@ class MainWindow(QMainWindow):
     
     def handleQuit(self):
         self.mediaPlayer.stop()
+        self.writeSettings()
         print("Auf Wiedersehen ...")
         app.quit()
 
