@@ -1,5 +1,7 @@
 # LiveStream-TVPlayer-Deutsch 🇩🇪
 
+[Hier](https://forum.ubuntuusers.de/post/9181102/) ist ein Beitrag zu einer neuen Version. Tester erwünscht.
+
 ![screenshot](https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/blob/master/screenshot.png)
 
 TVPlayer2 ist ein Player zum Abspielen von TV Streams.
