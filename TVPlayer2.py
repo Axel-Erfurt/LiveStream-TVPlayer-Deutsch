@@ -236,7 +236,10 @@ class MainWindow(QMainWindow):
         if self.settings.contains("lastUrl") and self.settings.contains("lastName"):
             self.link = self.settings.value("lastUrl")
             self.channelname = self.settings.value("lastName")
-            self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
+            if not self.link.startswith("http"):
+                self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.link)))
+            else:
+                self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
             self.mediaPlayer.play()
             print("aktueller Sender:", self.channelname, "\nURL:", self.link)
         else:
@@ -741,7 +744,10 @@ class MainWindow(QMainWindow):
         else:
             self.own_key = self.own_list.index(f"{self.channelname},{self.link}")
         print("aktueller Sender:", self.channelname, "\nURL:", self.link)
-        self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
+        if not self.link.startswith("http"):
+            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.link)))
+        else:
+            self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
         self.mediaPlayer.play()
         
 
@@ -753,7 +759,10 @@ class MainWindow(QMainWindow):
             self.link = self.own_list[channel].split(",")[1]
             self.channelname = self.own_list[channel].split(",")[0]
             print("eigener Sender:", self.channelname, "\nURL:", self.link)
-            self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
+            if not self.link.startswith("http"):
+                self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.link)))
+            else:
+                self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
             self.mediaPlayer.play()
         else:
             print(f"Kanal {channel} ist nicht vorhanden")
