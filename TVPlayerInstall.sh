@@ -1,9 +1,9 @@
 #!/bin/sh
-filename=$HOME/.local/share/LiveStream-TVPlayer-master/tv_listen
+filename=$HOME/.local/share/LiveStream-TVPlayer-master/mychannels.txt
 if [ -d "$filename" ]
 then
     echo "$filename gefunden, kopiere nach /tmp"
-    cp -rf $filename /tmp
+    cp $filename /tmp
 else
     echo "$filename nicht gefunden"
 fi
@@ -26,7 +26,7 @@ sleep 1
 echo "zip Datei löschen"
 rm master.zip
 mv ~/.local/share/LiveStream-TVPlayer-Deutsch-master ~/.local/share/LiveStream-TVPlayer-master
-rf=/tmp/tv_listen
+rf=/tmp/mychannels.txt
 if [ -d "$rf" ]
 then
     echo "tv_listen wiederherstellen"
@@ -43,7 +43,5 @@ else
     cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 fi
 rm ~/Downloads/TVPlayerInstall.sh
-echo "Sender aktualisieren ... "
-python3 ~/.local/share/LiveStream-TVPlayer-master/query_mv.py ~/.local/share/LiveStream-TVPlayer-master/
-echo "TVPlayer2 starten ... "
+echo "TVPlayer2 Test starten ... "
 python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
