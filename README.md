@@ -1,6 +1,6 @@
 # LiveStream-TVPlayer-Deutsch 🇩🇪
 
-''Wer es schon installiert hat und seine alten Kanäle (ohne ÖR) aus tv_listen übernehmen möchte macht mit diesem Befehl ein Update.''
+> **Wer es schon installiert hat und seine alten Kanäle (ohne ÖR) aus tv_listen übernehmen möchte macht mit diesem Befehl ein Update.**
 
 ```shell
 cd ~/Downloads && echo "Download ..." && wget https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayer2Update.sh && chmod +x ./TVPlayer2Update.sh && echo "Update ausführen ..." && ./TVPlayer2Update.sh
