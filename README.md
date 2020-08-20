@@ -1,4 +1,4 @@
-# LiveStream-TVPlayer-Deutsch 🇩🇪
+# LiveStream-TVPlayer-Deutsch :de:
 
 > **Wer es schon installiert hat und seine alten Kanäle (ohne ÖR) aus tv_listen übernehmen möchte macht mit diesem Befehl ein Update.**
 
@@ -95,7 +95,7 @@ http://daserstehdde-lh.akamaihd.net/i/daserstehd_de@629196/index_3776_av-b.m3u8?
 
 Der Dateiname wird zum Menupunkt, z.B. zdf info.m3u8 erscheint als ZDF INFO im Menu.
 
-Über das Kontextmenü Sender aktualisieren 🇩🇪 können die Sender der öffentlich rechtlichen deutschen Sender aktualisiert werden.
+Über das Kontextmenü Sender aktualisieren können die Sender der öffentlich rechtlichen deutschen Sender aktualisiert werden.
 
 Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 
@@ -116,7 +116,7 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 
 ### Download App
 
-[Download 64bit App Ubuntu/Mint - neue Version 🇩🇪](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
+[Download 64bit App Ubuntu/Mint - neue Version :de:](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
 
 * letztes Update 20.August 2020 23:30
 
