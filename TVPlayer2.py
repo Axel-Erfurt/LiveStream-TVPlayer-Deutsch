@@ -167,6 +167,8 @@ class MainWindow(QMainWindow):
             self.mychannels = open(self.own_file).read()
             ### remove empty lines
             self.mychannels = os.linesep.join([s for s in self.mychannels.splitlines() if s])
+            with open(self.own_file, 'w') as f:
+                f.write(self.mychannels)
 
         self.fullscreen = False
         self.setAttribute(Qt.WA_NoSystemBackground, True)
