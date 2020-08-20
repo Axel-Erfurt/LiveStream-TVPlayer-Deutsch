@@ -1,5 +1,11 @@
 # LiveStream-TVPlayer-Deutsch 🇩🇪
 
+''Wer es schon installiert hat und seine alten Kanäle (ohne ÖR) aus tv_listen übernehmen möchte macht mit diesem Befehl ein Update.''
+
+```shell
+cd ~/Downloads && echo "Download ..." && wget https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayer2Update.sh && chmod +x ./TVPlayer2Update.sh && echo "Update ausführen ..." && ./TVPlayer2Update.sh
+```
+
 ![screenshot](https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/blob/master/screenshot.png)
 
 TVPlayer2 ist ein Player zum Abspielen von TV Streams.
@@ -15,7 +21,9 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 PyQt5 Abhängige Pakete kann man über die Paketquellen installieren mit
 
-> sudo apt-get install python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins  
+```shell
+sudo apt-get install python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins
+```
 
 ### Gstreamer
 
@@ -33,7 +41,9 @@ zur Aufnahme des aktuellen Senders (optional)
 
 im Terminal folgenden Befehl ausführen:
 
-> wget 'https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayerInstall.sh' -O ~/Downloads/TVPlayerInstall.sh && chmod +x ~/Downloads/TVPlayerInstall.sh && ~/Downloads/TVPlayerInstall.sh
+```shell
+wget 'https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayerInstall.sh' -O ~/Downloads/TVPlayerInstall.sh && chmod +x ~/Downloads/TVPlayerInstall.sh && ~/Downloads/TVPlayerInstall.sh
+```
 
 Damit wird die aktuelle Version von github heruntergeladen und im Ordner ~/.local/share/ gespeichert.
 
@@ -44,15 +54,20 @@ Aus dem Startmenu (TVPlayer2)
 
 oder im Terminal mit
 
-> cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2.py 
+```shell
+cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2.py
+```
 
 ### Deinstallation
 
 Dazu im Terminal folgende Befehle ausführen
 
-> cd ~/.local/share/ && rm -rf LiveStream-TVPlayer-master 
-
-> cd ~/.local/share/applications && rm TVPlayer2.desktop
+```shell
+cd ~/.local/share/ && rm -rf LiveStream-TVPlayer-master 
+```
+```shell
+cd ~/.local/share/applications && rm TVPlayer2.desktop
+```
 
 ### Bedienung
 
