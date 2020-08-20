@@ -43,5 +43,5 @@ else
     cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 fi
 rm ~/Downloads/TVPlayerInstall.sh
-echo "TVPlayer2 Test starten ... "
-python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
+#echo "TVPlayer2 Test starten ... "
+#python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
