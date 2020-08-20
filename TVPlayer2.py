@@ -14,8 +14,6 @@ import os
 import sys
 from requests import get, post, request
 import time
-import locale
-from datetime import date
 
 mytv = "tv-symbolic"
 mybrowser = "video-television"
@@ -23,11 +21,7 @@ ratio = 1.777777778
 
 class Tagesprogramm():
     def __init__(self):
-        loc = locale.getlocale()
-        locale.setlocale(locale.LC_ALL, loc)
-        dt = date.today().strftime("%-d.%B %Y")
         self.titleList = []
-        self.titleList.append(dt)
                   
         self.dictList = {'ard': 71, 'zdf': 37, 'arte': 58, 'zdf neo': 659, 'zdf info': 276, 'wdr': 46, 'ndr': 47, \
                     'mdr': 48, 'hr': 49, 'swr': 10142, 'br': 51, 'rbb': 52, '3sat': 56, 'kika': 57, \
@@ -59,7 +53,6 @@ class Tagesprogramm():
     def getProgramm(self, channel):
         if channel.lower() in self.dictList:
             ch = channel.lower()
-            self.titleList.append(f"{ch.upper()} Programm\n")
             self.getURL(self.dictList.get(ch))
 
             t = '\n'.join(self.titleList)
@@ -579,7 +572,7 @@ class MainWindow(QMainWindow):
         tp = Tagesprogramm()
         msg = tp.getProgramm(ch)
         if not msg == None:
-            self.programmbox("Tagesprogramm", msg)
+            self.programmbox(ch, msg)
 
     def handleFullscreen(self):
         if self.fullscreen == True:
@@ -799,8 +792,9 @@ class MainWindow(QMainWindow):
         QMessageBox.warning(self, "Meldung", message)
         
     def programmbox(self, title, message):
-        QMessageBox.information(self, title, message)
-
+        m = QMessageBox(QMessageBox.NoIcon, title, message)
+        m.exec()
+        
     def wheelEvent(self, event):
         mwidth = self.frameGeometry().width()
         mscale = event.angleDelta().y() / 6
