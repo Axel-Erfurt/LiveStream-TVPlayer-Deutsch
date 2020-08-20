@@ -70,7 +70,7 @@ class Tagesprogramm():
 
 class URLGrabber():
     def __init__(self):
-        self.channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika", "orf"]
+        self.channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika", "orf", "sf"]
         self.chList = []
         self.urlList = []
         self.menuList = []
@@ -168,9 +168,11 @@ class MainWindow(QMainWindow):
         self.lbl.hide()
 
         self.root = QFileInfo.path(QFileInfo(QCoreApplication.arguments()[0]))
-        own_file = f"{self.root}/mychannels.txt"
-        if os.path.isfile(own_file):
-            self.mychannels = open(own_file).read()
+        self.own_file = f"{self.root}/mychannels.txt"
+        if os.path.isfile(self.own_file):
+            self.mychannels = open(self.own_file).read()
+            ### remove empty lines
+            self.mychannels = os.linesep.join([s for s in self.mychannels.splitlines() if s])
 
         self.fullscreen = False
 
@@ -217,7 +219,15 @@ class MainWindow(QMainWindow):
             
         self.createMenu()
         self.readSettings()
-
+        
+    def addToOwnChannels(self):
+        k = "Name"
+        dlg = QInputDialog()
+        myname, ok = dlg.getText(self, 'Dialog', 'Namen eingeben', QLineEdit.Normal, k, Qt.Dialog)
+        if ok:
+            with open(self.own_file, 'a') as f:
+                f.write(f"\n{myname},{self.link}")
+                self.channelname = myname
             
     def readSettings(self):
         print("lese Konfigurationsdatei ...")
@@ -343,13 +353,15 @@ class MainWindow(QMainWindow):
         self.channels_menu.addAction(self.color_action)
 
         self.channels_menu.addSeparator()
-
+        
+        self.addChannelAction = QAction(QIcon.fromTheme("add"), "aktuellen Sender hinzufügen", triggered = self.addToOwnChannels)
+        self.channels_menu.addAction(self.addChannelAction)
+        
         self.quit_action = QAction(QIcon.fromTheme("application-exit"), "Beenden (q)", triggered = self.handleQuit)
         self.channels_menu.addAction(self.quit_action)
         
     def tv_programm_now(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3']
-
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport']
 
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
         programm = []
@@ -365,8 +377,7 @@ class MainWindow(QMainWindow):
         self.programmbox("jetzt im Programm", '\n'.join(programm))
         
     def tv_programm_later(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3']
-
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport']
 
         url = "https://www.hoerzu.de/text/tv-programm/gleich.php"
         programm = []
@@ -378,26 +389,25 @@ class MainWindow(QMainWindow):
             line = pr[x:].partition("</a>")[0].replace(">", "").partition("<br/")[0]
             if not line == "":
                 programm.append(line)
-
         self.programmbox("danach im Programm", '\n'.join(programm))
          
-        
     def dragEnterEvent(self, event):
-        if (event.mimeData().hasUrls()):
-            event.acceptProposedAction()
+        event.acceptProposedAction()
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             url = event.mimeData().urls()[0].toString()
-            print("url = ", url)
+            print("neue URL abgelegt = ", url)
+            self.link = url
             self.mediaPlayer.stop()
-            self.mediaPlayer.setMedia(QMediaContent(QUrl(url)))
+            self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
             self.mediaPlayer.play()
         elif event.mimeData().hasText():
             mydrop =  event.mimeData().text()
-            if "http" in mydrop:
-                print("stream url = ", mydrop)
-                self.mediaPlayer.setMedia(QMediaContent(QUrl(mydrop)))
+            if mydrop.startswith("http"):
+                print("neuer Link abgelegt = ", mydrop)
+                self.link = mydrop
+                self.mediaPlayer.setMedia(QMediaContent(QUrl(self.link)))
                 self.mediaPlayer.play()
         event.acceptProposedAction()
         
