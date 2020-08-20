@@ -1,7 +1,8 @@
 ARD SD,http://mcdn.daserste.de/daserste/de/master_1184.m3u8
-ARD Alpha,http://livestreams.br.de/i/bralpha_germany@119899/master.m3u8
-Deutsche Welle TV,http://dwstream72-lh.akamaihd.net/i/dwstream72_live@123556/master.m3u8
 Servus TV,https://rbmn-live.akamaized.net/hls/live/2002830/geoSTVDEweb/master.m3u8
 SR,http://livestream.sr-online.de/live.m3u8
+Welt,http://live2weltcms-lh.akamaihd.net/i/Live2WeltCMS_1@444563/master.m3u8
+MTV,http://unilivemtveu-lh.akamaihd.net/i/mtvde_1@134922/master.m3u8
+MUXX,https://5856e1a25f71a.streamlock.net/easycast7-live/livestream/playlist.m3u8
 Sportschau HD,http://wdrardevent1-lh.akamaihd.net/i/ardevent1_weltweit@566648/master.m3u8
 Sportschau HD2,http://wdrardevent2-lh.akamaihd.net/i/wdrardevent2_geo@100869/master.m3u8
