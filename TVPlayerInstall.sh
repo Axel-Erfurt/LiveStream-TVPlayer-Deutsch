@@ -1,9 +1,9 @@
 #!/bin/sh
 filename=$HOME/.local/share/LiveStream-TVPlayer-master/mychannels.txt
-if [ -d "$filename" ]
+if [ -e "$filename" ]
 then
     echo "$filename gefunden, kopiere nach /tmp"
-    cp $filename /tmp
+    cp $filename /tmp/mychannels.txt
 else
     echo "$filename nicht gefunden"
 fi
@@ -27,10 +27,10 @@ echo "zip Datei löschen"
 rm master.zip
 mv ~/.local/share/LiveStream-TVPlayer-Deutsch-master ~/.local/share/LiveStream-TVPlayer-master
 rf=/tmp/mychannels.txt
-if [ -d "$rf" ]
+if [ -e "$rf" ]
 then
-    echo "tv_listen wiederherstellen"
-    cp $rf -rf $HOME/.local/share/LiveStream-TVPlayer-master
+    echo "mychannels.txt wiederherstellen"
+    cp $rf $HOME/.local/share/LiveStream-TVPlayer-master/mychannels.txt
 else
     echo "$rf nicht gefunden"
 fi
