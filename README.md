@@ -63,10 +63,13 @@ cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2.py
 Dazu im Terminal folgende Befehle ausführen
 
 ```shell
-cd ~/.local/share/ && rm -rf LiveStream-TVPlayer-master 
+rm -rf ~/.local/share/LiveStream-TVPlayer-master 
 ```
 ```shell
-cd ~/.local/share/applications && rm TVPlayer2.desktop
+rm ~/.local/share/applications/TVPlayer2.desktop
+```
+```shell
+rm -rf ~/.config/TVPlayer2
 ```
 
 ### Bedienung
