@@ -16,6 +16,7 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 - PyQt5
 - streamlink (zum Aufnehmen des TV Streams)
 - gstreamer
+- python-mpv (für die mpv Version TVPlayer2mpv.py)
 
 ### PyQt5
 
@@ -116,6 +117,13 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 - ↑ 	lauter
 - ↓ 	leiser 
 
+### mpv Version
+TVPlayer2mpv.py ist eine Version mit mpv als Player die zusätzlich python-mpv benötigt.
+
+```pip3 install python-mpv```
+
+Es kann die neuen ZDF Streams wo Bild und Ton auf getrennten URLs gesendet werden besser verarbeiten.
+Der Start eines solchen Streams dauert allerdings etwas länger, ist aber ruckelfrei
 
 ### Download App
 
