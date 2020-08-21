@@ -30,7 +30,6 @@ class MPVPlayer():
                          input_cursor=False, 
                          osc=True)
                          
-        self.player.on_key_press('ESC')(self.player.quit)
         
     def play(self, url):
         print("play('{}')".format(url), file=sys.stderr)
