@@ -160,9 +160,9 @@ class MainWindow(QMainWindow):
         self.lbl.setStyleSheet("background: #2e3436; color: #ef2929; font-size: 10pt;")
         self.lbl.setText("®")
         self.lbl.hide()
-
-        self.root = QFileInfo.path(QFileInfo(QCoreApplication.arguments()[0]))
-        self.own_file = f"{self.root}/mychannels.txt"
+        
+        self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
+        print(self.own_file)
         if os.path.isfile(self.own_file):
             self.mychannels = open(self.own_file).read()
             ### remove empty lines
