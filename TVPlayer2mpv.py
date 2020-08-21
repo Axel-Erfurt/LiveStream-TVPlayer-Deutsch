@@ -4,7 +4,7 @@
 from PyQt5.QtCore import (QPoint, Qt, QUrl, QProcess, QFile, QDir, QSettings, 
                           QStandardPaths, QFileInfo, QCoreApplication, QRect)
 from PyQt5.QtGui import QIcon, QDesktopServices
-from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox, 
+from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox, QDialog, 
                              QMenu, QInputDialog, QLineEdit, QFileDialog, QLabel, 
                              QFormLayout, QSlider, QPushButton, QDialog, QWidget)
 
@@ -126,7 +126,7 @@ class URLGrabber():
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        
+        self.colorDialog = None
         self.settings = QSettings("TVPlayer2", "settings")
         mg = URLGrabber()
         print("hole aktuelle Stream URLs")
@@ -363,6 +363,13 @@ class MainWindow(QMainWindow):
 
         self.url_action = QAction(QIcon.fromTheme("browser"), "URL vom Clipboard spielen (u)", triggered = self.playURL)
         self.channels_menu.addAction(self.url_action)
+        
+        self.channels_menu.addSection("Einstellungen")
+
+        self.color_action = QAction(QIcon.fromTheme("preferences-color"), "Bildeinstellungen (c)", triggered = self.showColorDialog)
+        self.channels_menu.addAction(self.color_action)
+
+        self.channels_menu.addSeparator()
 
         self.channels_menu.addSeparator()
 
@@ -636,6 +643,8 @@ class MainWindow(QMainWindow):
             self.stop_recording()
         elif e.key() == Qt.Key_W:
             self.record_without_timer()
+        elif e.key() == Qt.Key_C:
+            self.showColorDialog()
         elif e.key() == Qt.Key_1:
             self.play_own(0)
         elif e.key() == Qt.Key_2:
@@ -809,6 +818,77 @@ class MainWindow(QMainWindow):
                       - QPoint(round(self.frameGeometry().width() / 2), \
                                round(self.frameGeometry().height() / 2)))
             event.accept()
+            
+    def setBrightness(self):
+        self.mediaPlayer.brightness = self.brightnessSlider.value()
+        
+    def setContrast(self):
+        self.mediaPlayer.contrast = self.contrastSlider.value()
+        
+    def setHue(self):
+        self.mediaPlayer.hue = self.hueSlider.value()
+
+    def setSaturation(self):
+        self.mediaPlayer.saturation = self.saturationSlider.value()
+        
+    def showColorDialog(self):
+        if self.colorDialog is None:
+            self.brightnessSlider = QSlider(Qt.Horizontal)
+            self.brightnessSlider.setRange(-100, 100)
+            self.brightnessSlider.setValue(self.mediaPlayer.brightness)
+            self.brightnessSlider.valueChanged.connect(self.setBrightness)
+
+            self.contrastSlider = QSlider(Qt.Horizontal)
+            self.contrastSlider.setRange(-100, 100)
+            self.contrastSlider.setValue(self.mediaPlayer.contrast)
+            self.contrastSlider.valueChanged.connect(self.setContrast)
+            
+            self.hueSlider = QSlider(Qt.Horizontal)
+            self.hueSlider.setRange(-100, 100)
+            self.hueSlider.setValue(self.mediaPlayer.hue)
+            self.hueSlider.valueChanged.connect(self.setHue)
+
+            self.saturationSlider = QSlider(Qt.Horizontal)
+            self.saturationSlider.setRange(-100, 100)
+            self.saturationSlider.setValue(self.mediaPlayer.saturation)
+            self.saturationSlider.valueChanged.connect(self.setSaturation)
+
+            layout = QFormLayout()
+            layout.addRow("Helligkeit", self.brightnessSlider)
+            layout.addRow("Kontrast", self.contrastSlider)
+            layout.addRow("Farbton", self.hueSlider)
+            layout.addRow("Farbe", self.saturationSlider)
+
+            btn = QPushButton("zurücksetzen")
+            btn.setIcon(QIcon.fromTheme("preferences-color"))
+            layout.addRow(btn)
+
+            button = QPushButton("Schließen")
+            button.setIcon(QIcon.fromTheme("ok"))
+            layout.addRow(button)
+
+            self.colorDialog = QDialog(self)
+            self.colorDialog.setWindowTitle("Bildeinstellungen")
+            self.colorDialog.setLayout(layout)
+
+            btn.clicked.connect(self.resetColors)
+            button.clicked.connect(self.colorDialog.close)
+
+        self.colorDialog.resize(300, 180)
+        self.colorDialog.show()
+
+    def resetColors(self):
+        self.brightnessSlider.setValue(0)
+        self.mediaPlayer.brightness = (0)
+
+        self.contrastSlider.setValue(0)
+        self.mediaPlayer.contrast = (0)
+
+        self.saturationSlider.setValue(0)
+        self.mediaPlayer.saturation = (0)
+
+        self.hueSlider.setValue(0)
+        self.mediaPlayer.hue = (0)
 
 
 if __name__ == '__main__':
