@@ -42,6 +42,7 @@ else
     echo "$desktopfile nicht gefunden"
     cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 fi
+mkdir -p ~/.icons && cp ~/.local/share/LiveStream-TVPlayer-master/icon2.png ~/.icons/ 
 rm ~/Downloads/TVPlayerInstall.sh
 #echo "TVPlayer2 Test starten ... "
 #python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
