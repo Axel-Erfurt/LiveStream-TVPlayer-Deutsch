@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 #############################################################################
 from PyQt5.QtCore import (QPoint, Qt, QUrl, QProcess, QFile, QDir, QSettings, 
-                          QStandardPaths, QFileInfo, QCoreApplication, QRect)
+                          QStandardPaths, QRect)
 from PyQt5.QtGui import QIcon, QDesktopServices
-from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox, QDialog, 
-                             QMenu, QInputDialog, QLineEdit, QFileDialog, QLabel, 
+from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox, 
+                             QMenu, QInputDialog, QLineEdit, QFileDialog, 
                              QFormLayout, QSlider, QPushButton, QDialog, QWidget)
 
 import mpv
@@ -13,6 +13,7 @@ import os
 import sys
 from requests import get, post, request
 import time
+from datetime import datetime
 import locale
 
 mytv = "tv-symbolic"
@@ -152,17 +153,12 @@ class MainWindow(QMainWindow):
         
         self.mediaPlayer = mpv.MPV(log_handler=self.logger,
                            input_cursor=False,
+                           osd_font_size=30, 
                            wid=str(int(self.container.winId())), config=False)
                          
         self.mediaPlayer.set_loglevel('warn')
         self.mediaPlayer.cursor_autohide = 2000
 
-        self.lbl = QLabel(self.container)
-        self.lbl.setGeometry(3, 3, 11, 11)
-        self.lbl.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.lbl.setStyleSheet("background: #2e3436; color: #ef2929; font-size: 10pt;")
-        self.lbl.setText("®")
-        self.lbl.hide()
         
         self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
         print(self.own_file)
@@ -216,6 +212,8 @@ class MainWindow(QMainWindow):
             
         self.createMenu()
         self.readSettings()
+        #self.mediaPlayer.show_text("TVPlayer2", duration="3000", level=None)
+        #self.getEPG()
         
     def logger(self, loglevel, component, message):
         print('[{}] {}: {}'.format(loglevel, component, message), file=sys.stderr)
@@ -246,17 +244,19 @@ class MainWindow(QMainWindow):
             self.channelname = self.settings.value("lastName")
             self.mediaPlayer.play(self.link)
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
+            self.getEPG()
         else:
             if len(self.own_list) > 0:
                 self.play_own(0)
+                self.getEPG()
             else:
                 self.playARD()
+                self.getEPG()
         if self.settings.contains("volume"):
             vol = self.settings.value("volume")
             print("setze Lautstärke auf", vol)
             self.mediaPlayer.volume = (int(vol))
 
-                
     def writeSettings(self):
         print("schreibe Konfigurationsdatei ...")
         self.settings.setValue("geometry", self.geometry())
@@ -373,8 +373,12 @@ class MainWindow(QMainWindow):
         self.quit_action = QAction(QIcon.fromTheme("application-exit"), "Beenden (q)", triggered = self.handleQuit)
         self.channels_menu.addAction(self.quit_action)
         
+    def showTime(self):
+        t = str(datetime.now())[11:16]
+        self.mediaPlayer.show_text(t, duration="4000", level=None) 
+        
     def tv_programm_now(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport']
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
         programm = []
@@ -386,11 +390,12 @@ class MainWindow(QMainWindow):
             line = pr[x:].partition("</a>")[0].replace(">", "").partition("<br/")[0]
             if not line == "":
                 programm.append(line)
-                
-        self.programmbox("jetzt im Programm", '\n'.join(programm))
+        
+        self.mediaPlayer.show_text('\n'.join(programm), duration="7000", level=None)        
+
         
     def tv_programm_later(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport']
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/gleich.php"
         programm = []
@@ -402,7 +407,8 @@ class MainWindow(QMainWindow):
             line = pr[x:].partition("</a>")[0].replace(">", "").partition("<br/")[0]
             if not line == "":
                 programm.append(line)
-        self.programmbox("danach im Programm", '\n'.join(programm))
+        self.mediaPlayer.show_text('\n'.join(programm), duration="7000", level=None) 
+
          
     def dragEnterEvent(self, event):
         event.acceptProposedAction()
@@ -444,13 +450,13 @@ class MainWindow(QMainWindow):
             else:
                 print("Die Datei " + self.outfile + " existiert nicht") 
             self.recname = self.channelname
-            self.showLabel()
             print("Aufnahme in /tmp")
             self.is_recording = True
             cmd = f'ffmpeg -loglevel quiet -stats -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
             print(cmd)
             self.processW.isRunning = True
             self.processW.startDetached(cmd)
+            self.mediaPlayer.show_text("®", duration="25000", level=None)
 
 
     def record_with_timer(self):
@@ -470,17 +476,16 @@ class MainWindow(QMainWindow):
                 self.tout = str(tout)
                 self.recordChannel()
             else:
-                self.lbl.hide()
                 print("Aufnahme abgebrochen")
 
     def recordChannel(self):
         self.processR.isRunning = True
         self.recname = self.channelname
-        self.showLabel()
         cmd = f'timeout {str(self.tout)} ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
         print(cmd)
         print("Aufnahme in /tmp mit Timeout: " + str(self.tout))
         self.lbl.update()
+        self.mediaPlayer.show_text("®", duration=str(self.tout), level=None)
         self.is_recording = True
         self.processR.start(cmd)
 ################################################################
@@ -504,9 +509,6 @@ class MainWindow(QMainWindow):
                     "Kann Datei nicht schreiben %s:\n%s." % (path, infile.errorString()))
             if infile.exists:
                 infile.remove()
-            self.lbl.hide()
-        else:
-            self.lbl.hide()
 
     def stop_recording(self):
         print("StateR:", self.processR.state())
@@ -532,7 +534,6 @@ class MainWindow(QMainWindow):
                 self.processW.isRunning = False
         else:
             print("es wird gerade nicht aufgenommen")
-            self.lbl.hide()
  
     def rec_finished(self):
         print("Aufnahme beendet")
@@ -543,8 +544,6 @@ class MainWindow(QMainWindow):
         self.is_recording = False
         self.processR.kill()
         print("Aufnahme beendet")
-
-        self.lbl.hide()
         self.saveMovie()
 
     def playURL(self):
@@ -566,6 +565,40 @@ class MainWindow(QMainWindow):
     def handleAbout(self):
         QMessageBox.about(self, "TVPlayer2", self.myinfo)
         
+    def getEPG(self):      
+        print("ch =", self.channelname)
+        ch_name = self.channelname.replace(" SD", "").replace(" HD", "")
+        if ch_name == "ARD":
+            ch_name = "Das Erste"
+        if "MDR" in ch_name :
+            ch_name = "MDR"
+        if "Tagesschau" in ch_name:
+            ch_name = "tagesschau24"
+        if "ARD Alpha" in ch_name:
+            ch_name = "ARD alpha"
+        if "ZDF info" in ch_name:
+            ch_name = "ZDFinfo"
+        if "ZDF neo" in ch_name:
+            ch_name = "ZDFneo"
+        if "ONE" in ch_name:
+            ch_name = "One ,"
+        if "kika" in ch_name:
+            return
+            
+        url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
+        programm = []
+
+        pr = request(method='GET', url = url).text.partition(".</H3>")[2].partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", "")
+
+        x = int(pr.find(ch_name))
+        line = pr[x:].partition("</a>")[0].replace(">", "").replace(",", " - ")
+        if not line == "":
+            programm.append(line)
+            
+        msg = '\n'.join(programm)
+        print(msg)
+        self.mediaPlayer.show_text(msg, duration="7000", level=None)
+        
     def tv_programm_tag(self):
         ch = self.channelname.replace(" SD", "").replace(" HD", "")
         if ch.startswith("BR"):
@@ -579,7 +612,7 @@ class MainWindow(QMainWindow):
         if ch.startswith("ORF"):
             ch = ch.replace("-", " ")
         if "Tagesschau" in ch:
-            ch = "tagesschau"
+            ch = "tagesschau24"
         if "ARTE" in ch:
             ch = "arte"
         if "alpha" in ch:
@@ -591,7 +624,9 @@ class MainWindow(QMainWindow):
         tp = Tagesprogramm()
         msg = tp.getProgramm(ch)
         if not msg == None:
-            self.programmbox(ch, msg)
+            now = str(datetime.now().hour)
+            msg = f"{now}{msg.partition(now)[2]}"
+            self.mediaPlayer.show_text(msg, duration="7000", level=None) 
 
     def handleFullscreen(self):
         if self.fullscreen == True:
@@ -645,6 +680,10 @@ class MainWindow(QMainWindow):
             self.record_with_timer()
         elif e.key() == Qt.Key_S:
             self.stop_recording()
+        elif e.key() == Qt.Key_T:
+            self.showTime()
+        elif e.key() == Qt.Key_E:
+            self.getEPG()
         elif e.key() == Qt.Key_W:
             self.record_without_timer()
         elif e.key() == Qt.Key_C:
@@ -673,8 +712,6 @@ class MainWindow(QMainWindow):
             self.playARD()
         elif e.key() == Qt.Key_Z:
             self.playZDF()
-        elif e.key() == Qt.Key_T:
-            self.playTagesschau()
         elif e.key() == Qt.Key_Right:
             self.play_next(self.default_key + 1)
         elif e.key() == Qt.Key_Plus:
@@ -733,8 +770,6 @@ class MainWindow(QMainWindow):
                     self.default_key = self.channel_list.index(self.channelname)
 
     def play_Sport1(self):
-        if not self.is_recording:
-            self.lbl.hide()
         url = "https://tv.sport1.de/sport1/"
         r = get(url)
         myurl = r.text.partition('file: "')[2].partition('"')[0].replace("\n", "")
@@ -745,13 +780,9 @@ class MainWindow(QMainWindow):
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
             self.default_key = self.channel_list.index(self.channelname)
-
-    def showLabel(self):
-        self.lbl.show()
+            self.getEPG()
 
     def playTV(self):
-        if not self.is_recording:
-            self.lbl.hide()
         action = self.sender()
         self.link = action.data().replace("\n", "")
         self.channelname = action.text()
@@ -761,42 +792,44 @@ class MainWindow(QMainWindow):
             self.own_key = self.own_list.index(f"{self.channelname},{self.link}")
         print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
         self.mediaPlayer.play(self.link)
+        #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+        self.getEPG()
         
 
     def play_own(self, channel):
         if not channel > len(self.own_list) - 1:
-            if not self.is_recording:
-                self.lbl.hide()
             self.own_key = channel
             self.link = self.own_list[channel].split(",")[1]
             self.channelname = self.own_list[channel].split(",")[0]
             print("eigener Sender:", self.channelname, "\nURL:", self.link)
             self.mediaPlayer.play(self.link)
+            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.getEPG()
         else:
             print(f"Kanal {channel} ist nicht vorhanden")
             
             
     def play_next(self, channel):
         if not channel > len(self.default_list) - 1:
-            if not self.is_recording:
-                self.lbl.hide()
             self.default_key = channel
             self.link = self.default_list[channel].split(",")[1]
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
+            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.getEPG()
         else:
             self.play_next(0)
             
     def play_previous(self, channel):
         if not channel == 0:
-            if not self.is_recording:
-                self.lbl.hide()
             self.default_key = channel
             self.link = self.default_list[channel].split(",")[1]
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
+            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.getEPG()
         else:
             self.play_next(len(self.default_list))
 
@@ -805,10 +838,6 @@ class MainWindow(QMainWindow):
 
     def msgbox(self, message):
         QMessageBox.warning(self, "Meldung", message)
-        
-    def programmbox(self, title, message):
-        m = QMessageBox(QMessageBox.NoIcon, title, message)
-        m.exec()
         
     def wheelEvent(self, event):
         mwidth = self.frameGeometry().width()
@@ -897,7 +926,6 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    import locale
     locale.setlocale(locale.LC_NUMERIC, 'C')
     mainWin = MainWindow()
     mainWin.show()
