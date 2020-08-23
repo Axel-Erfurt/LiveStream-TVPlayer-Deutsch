@@ -154,7 +154,6 @@ class MainWindow(QMainWindow):
         self.mediaPlayer = mpv.MPV(log_handler=self.logger,
                            input_cursor=False,
                            osd_font_size=28,
-                           vo="vdpau", 
                            wid=str(int(self.container.winId())), config=False)
                          
         self.mediaPlayer.set_loglevel('warn')
