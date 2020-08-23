@@ -19,25 +19,6 @@ mytv = "tv-symbolic"
 mybrowser = "video-television"
 ratio = 1.777777778
 
-
-class MPVPlayer():
-    def __init__(self):
-        self.player = mpv.MPV(ytdl=True,
-                         input_default_bindings=True,
-                         input_vo_keyboard=True,
-                         terminal=True,
-                         input_terminal=True,
-                         input_cursor=False, 
-                         osc=True)
-                         
-        
-    def play(self, url):
-        print("play('{}')".format(url), file=sys.stderr)
-        self.player.play(url)
-        self.player.wait_for_playback()
-        if self.player.vo_configured:
-            return
-
 class Tagesprogramm():
     def __init__(self):
         self.titleList = []
@@ -150,10 +131,16 @@ class MainWindow(QMainWindow):
         self.mychannels = []
         self.channels_menu = QMenu()
 
-        self.process = QProcess()
-        self.process.started.connect(self.getPID)
-        self.process.finished.connect(self.timer_finished)
-        self.process.finished.connect(self.recfinished)
+        self.processR = QProcess()
+        self.processR.started.connect(self.getPID)
+        self.processR.finished.connect(self.timer_finished)
+        self.processR.finished.connect(self.recfinished)
+        self.processR.isRunning = False
+        
+        self.processW = QProcess()
+        self.processW.started.connect(self.getPID)
+        self.processW.finished.connect(self.recfinished)
+        self.processW.isRunning = False
                          
         self.container = QWidget(self)
         self.setCentralWidget(self.container)
@@ -163,14 +150,12 @@ class MainWindow(QMainWindow):
         self.container.customContextMenuRequested[QPoint].connect(self.contextMenuRequested)
         self.setAcceptDrops(True)
         
-        self.mediaPlayer = mpv.MPV(input_default_bindings=False,
-                         input_vo_keyboard=False,
-                         terminal=False,
-                         input_terminal=False,
-                         osc=False, 
-                         cursor_autohide=5, 
-                         input_cursor=False, 
-                         wid=str(int(self.container.winId())), config=False)
+        self.mediaPlayer = mpv.MPV(log_handler=self.logger,
+                           input_cursor=False,
+                           wid=str(int(self.container.winId())), config=False)
+                         
+        self.mediaPlayer.set_loglevel('warn')
+        self.mediaPlayer.cursor_autohide = 2000
 
         self.lbl = QLabel(self.container)
         self.lbl.setGeometry(3, 3, 11, 11)
@@ -223,14 +208,17 @@ class MainWindow(QMainWindow):
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">j = was gerade im Fersehen läuft (mehrere Sender)</p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">d = was danach im Fersehen läuft (mehrere Sender)"""
         print("Willkommen beim TV Player & Recorder")
-        if self.is_tool("streamlink"):
-            print("streamlink gefunden\nAufnahme möglich")
+        if self.is_tool("ffmpeg"):
+            print("ffmpeg gefunden\nAufnahme möglich")
             self.recording_enabled = True
         else:
-            self.msgbox("streamlink nicht gefunden\nkeine Aufnahme möglich")
+            self.msgbox("ffmpeg nicht gefunden\nkeine Aufnahme möglich")
             
         self.createMenu()
         self.readSettings()
+        
+    def logger(self, loglevel, component, message):
+        print('[{}] {}: {}'.format(loglevel, component, message), file=sys.stderr)
         
     def editOwnChannels(self):
         QDesktopServices.openUrl(QUrl(f"file://{self.own_file}"))
@@ -446,7 +434,7 @@ class MainWindow(QMainWindow):
             return False
 
     def getPID(self):
-        print(self.process.pid(), self.process.processId() )
+        print("pid", self.processR.processId())
 
     def record_without_timer(self):
         if not self.recording_enabled == False:
@@ -459,9 +447,11 @@ class MainWindow(QMainWindow):
             self.showLabel()
             print("Aufnahme in /tmp")
             self.is_recording = True
-            cmd = 'streamlink --force ' + self.link.replace("?sd=10&rebase=on", "") + ' best -o ' + self.outfile
+            cmd = f'ffmpeg -loglevel quiet -stats -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
             print(cmd)
-            self.process.startDetached(cmd)
+            self.processW.isRunning = True
+            self.processW.startDetached(cmd)
+
 
     def record_with_timer(self):
         if not self.recording_enabled == False:
@@ -484,14 +474,15 @@ class MainWindow(QMainWindow):
                 print("Aufnahme abgebrochen")
 
     def recordChannel(self):
+        self.processR.isRunning = True
         self.recname = self.channelname
         self.showLabel()
-        cmd =  'timeout ' + str(self.tout) + ' streamlink --force ' + self.link.replace("?sd=10&rebase=on", "") + ' best -o ' + self.outfile
+        cmd = f'timeout {str(self.tout)} ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
         print(cmd)
         print("Aufnahme in /tmp mit Timeout: " + str(self.tout))
         self.lbl.update()
         self.is_recording = True
-        self.process.start(cmd)
+        self.processR.start(cmd)
 ################################################################
 
     def saveMovie(self):
@@ -518,26 +509,39 @@ class MainWindow(QMainWindow):
             self.lbl.hide()
 
     def stop_recording(self):
-        print(self.process.state())
+        print("StateR:", self.processR.state())
+        print("StateW:", self.processW.state())
         if self.is_recording == True:
             print("Aufnahme wird gestoppt")
-            QProcess().execute("killall streamlink")
-            self.process.kill()
-            self.is_recording = False
-            if self.process.exitStatus() == 0:
-                self.saveMovie()
+            QProcess().execute("killall ffmpeg")
+            if self.processR.isRunning:
+                if self.processR.state() == 2:
+                    self.processR.kill()
+                    self.processR.waitForFinished()
+                    self.is_recording = False
+                if self.processR.exitStatus() == 0:
+                    self.saveMovie()
+                self.processR.isRunning = False
+            if self.processW.isRunning:
+                if self.processW.state() == 2:
+                    self.processW.kill()
+                    self.processW.waitForFinished()
+                    self.is_recording = False
+                if self.processW.exitStatus() == 0:
+                    self.saveMovie()
+                self.processW.isRunning = False
         else:
             print("es wird gerade nicht aufgenommen")
             self.lbl.hide()
  
     def rec_finished(self):
         print("Aufnahme beendet")
-        self.process.kill()
+        self.processR.kill()
 
     def timer_finished(self):
         print("Timer beendet")
         self.is_recording = False
-        self.process.kill()
+        self.processR.kill()
         print("Aufnahme beendet")
 
         self.lbl.hide()
@@ -548,16 +552,16 @@ class MainWindow(QMainWindow):
         self.link = clip.text()
         self.mediaPlayer.play(self.link)
 
-    def handleError(self):
-        if not "Should no longer be called" in self.mediaPlayer.errorString():
-            print("Fehler: " + self.mediaPlayer.errorString())
-            self.msgbox("Fehler: " + self.mediaPlayer.errorString())
+    def handleError(self, loglevel, message):
+        print('{}: {}'.format(loglevel, message), file=sys.stderr)
 
     def handleMute(self):
-        if not self.mediaPlayer.isMuted():
-            self.mediaPlayer.setMuted(True)
+        if not self.mediaPlayer.mute:
+            self.mediaPlayer.mute = True
+            print("stumm")
         else:
-            self.mediaPlayer.setMuted(False)
+            self.mediaPlayer.mute = False
+            print("nicht stumm")
 
     def handleAbout(self):
         QMessageBox.about(self, "TVPlayer2", self.myinfo)
@@ -598,7 +602,7 @@ class MainWindow(QMainWindow):
             self.showMaximized()
             QApplication.setOverrideCursor(Qt.ArrowCursor)
             self.fullscreen = True
-            print("Fullscreen eingeschalter")
+            print("Fullscreen eingeschaltet")
         if self.fullscreen == False:
             self.showNormal()
             self.setGeometry(self.rect)
