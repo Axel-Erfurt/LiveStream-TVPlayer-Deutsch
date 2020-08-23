@@ -153,7 +153,8 @@ class MainWindow(QMainWindow):
         
         self.mediaPlayer = mpv.MPV(log_handler=self.logger,
                            input_cursor=False,
-                           osd_font_size=30, 
+                           osd_font_size=28,
+                           vo="vdpau", 
                            wid=str(int(self.container.winId())), config=False)
                          
         self.mediaPlayer.set_loglevel('warn')
@@ -378,7 +379,7 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.show_text(t, duration="4000", level=None) 
         
     def tv_programm_now(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
         programm = []
@@ -389,13 +390,12 @@ class MainWindow(QMainWindow):
             x = int(pr.find(ch))
             line = pr[x:].partition("</a>")[0].replace(">", "").partition("<br/")[0]
             if not line == "":
-                programm.append(line)
-        
+                programm.append(line.replace(" ,", ":", 1).replace(" ,", " -", 1))
         self.mediaPlayer.show_text('\n'.join(programm), duration="7000", level=None)        
 
         
     def tv_programm_later(self):
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'KiKa', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/gleich.php"
         programm = []
@@ -406,7 +406,7 @@ class MainWindow(QMainWindow):
             x = int(pr.find(ch))
             line = pr[x:].partition("</a>")[0].replace(">", "").partition("<br/")[0]
             if not line == "":
-                programm.append(line)
+                programm.append(line.replace(" ,", ":", 1).replace(" ,", " -", 1))
         self.mediaPlayer.show_text('\n'.join(programm), duration="7000", level=None) 
 
          
@@ -582,6 +582,8 @@ class MainWindow(QMainWindow):
             ch_name = "ZDFneo"
         if "ONE" in ch_name:
             ch_name = "One ,"
+        if "3Sat" in ch_name or "3 Sat" in ch_name:
+            ch_name = "3sat"
         if "kika" in ch_name:
             return
             
