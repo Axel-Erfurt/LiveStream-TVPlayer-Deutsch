@@ -461,7 +461,6 @@ class MainWindow(QMainWindow):
             print(cmd)
             self.processW.isRunning = True
             self.processW.startDetached(cmd)
-            self.mediaPlayer.show_text("®", duration="25000", level=None)
 
 
     def record_with_timer(self):
@@ -489,8 +488,6 @@ class MainWindow(QMainWindow):
         cmd = f'timeout {str(self.tout)} ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
         print(cmd)
         print("Aufnahme in /tmp mit Timeout: " + str(self.tout))
-        self.lbl.update()
-        self.mediaPlayer.show_text("®", duration=str(self.tout), level=None)
         self.is_recording = True
         self.processR.start(cmd)
 ################################################################
@@ -528,7 +525,7 @@ class MainWindow(QMainWindow):
                     self.is_recording = False
                 if self.processR.exitStatus() == 0:
                     self.saveMovie()
-                self.processR.isRunning = False
+                    self.processR.isRunning = False
             if self.processW.isRunning:
                 if self.processW.state() == 2:
                     self.processW.kill()
@@ -536,7 +533,7 @@ class MainWindow(QMainWindow):
                     self.is_recording = False
                 if self.processW.exitStatus() == 0:
                     self.saveMovie()
-                self.processW.isRunning = False
+                    self.processW.isRunning = False
         else:
             print("es wird gerade nicht aufgenommen")
  
