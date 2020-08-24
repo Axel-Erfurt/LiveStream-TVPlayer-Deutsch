@@ -154,6 +154,7 @@ class MainWindow(QMainWindow):
         self.mediaPlayer = mpv.MPV(log_handler=self.logger,
                            input_cursor=False,
                            osd_font_size=28,
+                           cursor_autohide=2000, 
                            cursor_autohide_fs_only=True,
                            wid=str(int(self.container.winId())), config=False)
                          
@@ -203,7 +204,8 @@ class MainWindow(QMainWindow):
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">- = eigener Sender -</p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">p = Tagesprogramm des laufenden Senders</p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">j = was gerade im Fersehen läuft (mehrere Sender)</p>
-<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">d = was danach im Fersehen läuft (mehrere Sender)"""
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">d = was danach im Fersehen läuft (mehrere Sender)
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">e = was gerade läuft (aktueller Sender)"""
         print("Willkommen beim TV Player & Recorder")
         if self.is_tool("ffmpeg"):
             print("ffmpeg gefunden\nAufnahme möglich")
@@ -596,8 +598,10 @@ class MainWindow(QMainWindow):
         line = pr[x:].partition("</a>")[0].replace(">", "").replace(",", " - ")
         if not line == "":
             programm.append(line)
-            
+        
+        now = str(datetime.now())[11:16]
         msg = '\n'.join(programm)
+        msg = f"{now}\n{msg}"
         print(msg)
         self.mediaPlayer.show_text(msg, duration="7000", level=None)
         
@@ -626,7 +630,7 @@ class MainWindow(QMainWindow):
         tp = Tagesprogramm()
         msg = tp.getProgramm(ch)
         if not msg == None:
-            now = str(datetime.now().hour)
+            now = f"{str(datetime.now().hour)}:"
             msg = f"{now}{msg.partition(now)[2]}"
             self.mediaPlayer.show_text(msg, duration="7000", level=None) 
 
@@ -653,7 +657,7 @@ class MainWindow(QMainWindow):
             QApplication.setOverrideCursor(Qt.ArrowCursor)
     
     def handleQuit(self):
-        self.mediaPlayer.quit()
+        self.mediaPlayer.quit
         self.writeSettings()
         print("Auf Wiedersehen ...")
         app.quit()
