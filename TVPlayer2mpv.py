@@ -108,6 +108,7 @@ class URLGrabber():
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.osd_font_size = 28
         self.colorDialog = None
         self.settings = QSettings("TVPlayer2", "settings")
         mg = URLGrabber()
@@ -153,7 +154,7 @@ class MainWindow(QMainWindow):
         
         self.mediaPlayer = mpv.MPV(log_handler=self.logger,
                            input_cursor=False,
-                           osd_font_size=28,
+                           osd_font_size=self.osd_font_size,
                            cursor_autohide=2000, 
                            cursor_autohide_fs_only=True,
                            wid=str(int(self.container.winId())), config=False)
@@ -381,6 +382,7 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.show_text(t, duration="4000", level=None) 
         
     def tv_programm_now(self):
+        self.mediaPlayer.osd_font_size = self.osd_font_size
         channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
@@ -397,6 +399,7 @@ class MainWindow(QMainWindow):
 
         
     def tv_programm_later(self):
+        self.mediaPlayer.osd_font_size = self.osd_font_size
         channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/gleich.php"
@@ -597,15 +600,17 @@ class MainWindow(QMainWindow):
         x = int(pr.find(ch_name))
         line = pr[x:].partition("</a>")[0].replace(">", "").replace(",", " - ")
         if not line == "":
-            programm.append(line)
+            programm.append(line.replace(f"{ch_name}  -  ", ''))
         
         now = str(datetime.now())[11:16]
         msg = '\n'.join(programm)
         msg = f"{now}\n{msg}"
         print(msg)
+        self.mediaPlayer.osd_font_size = 40
         self.mediaPlayer.show_text(msg, duration="7000", level=None)
         
     def tv_programm_tag(self):
+        self.mediaPlayer.osd_font_size = self.osd_font_size
         ch = self.channelname.replace(" SD", "").replace(" HD", "")
         if ch.startswith("BR"):
             ch = ch.partition(" ")[0]
