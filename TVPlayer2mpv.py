@@ -27,7 +27,7 @@ class Tagesprogramm():
         self.dictList = {'ard': 71, 'zdf': 37, 'arte': 58, 'zdf neo': 659, 'zdf info': 276, 'wdr': 46, 'ndr': 47, \
                     'mdr': 48, 'hr': 49, 'swr': 10142, 'br': 51, 'rbb': 52, '3sat': 56, 'kika': 57, \
                     'phoenix': 194, 'tagesschau': 100, 'one': 146, 'rtl': 38, 'sat 1': 39, 'pro 7': 40, \
-                    'sport 1': 64, 'servus tv': 660, 'welt': 175, 'orf 1': 54, 'orf 2': 55, 'orf 3': 56}
+                    'sport 1': 64, 'servus tv': 660, 'welt': 175, 'orf 1': 54, 'orf 2': 55, 'orf 3': 56, 'alpha': 104}
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0',
@@ -627,7 +627,7 @@ class MainWindow(QMainWindow):
             ch = "tagesschau"
         if "ARTE" in ch:
             ch = "arte"
-        if "alpha" in ch:
+        if "alpha" in ch or "Alpha" in ch:
             ch = "alpha"
         if ch =="SR":
             ch = "swr"
