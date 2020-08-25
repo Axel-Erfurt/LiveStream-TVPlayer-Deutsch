@@ -574,9 +574,13 @@ class MainWindow(QMainWindow):
             ch_name = "Das Erste"
         if "MDR" in ch_name :
             ch_name = "MDR"
+        if "NDR" in ch_name :
+            ch_name = "NDR"
+        if "BR" in ch_name :
+            ch_name = "BR"
         if "Tagesschau" in ch_name:
             ch_name = "tagesschau24"
-        if "ARD Alpha" in ch_name:
+        if "Alpha" in ch_name:
             ch_name = "ARD alpha"
         if "ZDF info" in ch_name:
             ch_name = "ZDFinfo"
@@ -620,7 +624,7 @@ class MainWindow(QMainWindow):
         if ch.startswith("ORF"):
             ch = ch.replace("-", " ")
         if "Tagesschau" in ch:
-            ch = "tagesschau24"
+            ch = "tagesschau"
         if "ARTE" in ch:
             ch = "arte"
         if "alpha" in ch:
@@ -629,11 +633,14 @@ class MainWindow(QMainWindow):
             ch = "swr"
         if "ONE" in ch:
             ch = "one"
+        if "3Sat" in ch or "3 Sat" in ch:
+            ch = "3sat"
         tp = Tagesprogramm()
         msg = tp.getProgramm(ch)
         if not msg == None:
             now = f"{str(datetime.now().hour)}:"
-            msg = f"{now}{msg.partition(now)[2]}"
+            if now in msg:
+                msg = f"{now}{msg.partition(now)[2]}"
             self.mediaPlayer.show_text(msg, duration="7000", level=None) 
 
     def handleFullscreen(self):
