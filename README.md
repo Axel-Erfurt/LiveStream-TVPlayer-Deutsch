@@ -129,7 +129,7 @@ Der Start eines solchen Streams dauert allerdings etwas länger, ist aber ruckel
 
 [Download 64bit App Ubuntu/Mint - neue Version :de:](https://mega.nz/file/3CBWXQLT#seUTPRyCLwcHl56t6PSN44UpS4PcByYrrSOLTQoTtaA)
 
-[Download 64bit App Ubuntu/Mint - neue Version MPV:de:](https://drive.google.com/uc?export=download&confirm=MXd_&id=1SU1oSpHiAQkq2jxzIVt7AEcYYS7nOu7h)
+[Download 64bit App Ubuntu/Mint - neue Version MPV:de:](https://doc-0s-1c-docs.googleusercontent.com/docs/securesc/sdsvp0pe9tdibbncp3ikqe1c5dbrbg5r/oonrcdicquo21ee2m8tk3i8blhv1550d/1598474550000/02824522905581316731/04841201622372970761Z/1SU1oSpHiAQkq2jxzIVt7AEcYYS7nOu7h?e=download)
 
 * letztes Update 20.August 2020 23:30 :new:
 
