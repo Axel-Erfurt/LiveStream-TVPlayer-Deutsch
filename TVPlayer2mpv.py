@@ -108,12 +108,11 @@ class URLGrabber():
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.setAttribute(Qt.WA_NoSystemBackground, True)
+        self.setStyleSheet("QMainWindow {background-color: 'black';}")
         self.osd_font_size = 28
         self.colorDialog = None
         self.settings = QSettings("TVPlayer2", "settings")
-        mg = URLGrabber()
-        print("hole aktuelle Stream URLs")
-        self.pList = mg.grab_urls()
         self.own_list = []
         self.own_key = 0
         self.default_key = 0
@@ -157,11 +156,13 @@ class MainWindow(QMainWindow):
                            osd_font_size=self.osd_font_size,
                            cursor_autohide=2000, 
                            cursor_autohide_fs_only=True,
+                           osd_color='#d3d7cf',
+                           osd_blur=2,
+                           osd_bold=True,
                            wid=str(int(self.container.winId())), config=False)
                          
-        self.mediaPlayer.set_loglevel('warn')
+        self.mediaPlayer.set_loglevel('fatal')
         self.mediaPlayer.cursor_autohide = 2000
-
         
         self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
         print(self.own_file)
@@ -173,7 +174,7 @@ class MainWindow(QMainWindow):
                 f.write(self.mychannels)
 
         self.fullscreen = False
-        self.setAttribute(Qt.WA_NoSystemBackground, True)
+
         self.setMinimumSize(320, 180)
         self.setGeometry(100, 100, 480, round(480 / ratio))
 
@@ -214,10 +215,13 @@ class MainWindow(QMainWindow):
         else:
             self.msgbox("ffmpeg nicht gefunden\nkeine Aufnahme möglich")
             
+        self.show()
+        self.readSettings()            
+        mg = URLGrabber()
+        print("hole aktuelle Stream URLs")
+        self.pList = mg.grab_urls()
+            
         self.createMenu()
-        self.readSettings()
-        #self.mediaPlayer.show_text("TVPlayer2", duration="3000", level=None)
-        #self.getEPG()
         
     def logger(self, loglevel, component, message):
         print('[{}] {}: {}'.format(loglevel, component, message), file=sys.stderr)
@@ -260,7 +264,8 @@ class MainWindow(QMainWindow):
             vol = self.settings.value("volume")
             print("setze Lautstärke auf", vol)
             self.mediaPlayer.volume = (int(vol))
-
+        self.mediaPlayer.show_text("Stream URLs werden aktualisiert", duration="3000", level=None) 
+        
     def writeSettings(self):
         print("schreibe Konfigurationsdatei ...")
         self.settings.setValue("geometry", self.geometry())
@@ -319,7 +324,8 @@ class MainWindow(QMainWindow):
         a = QAction(QIcon.fromTheme(mybrowser), "Sport1 Live", self, triggered=self.play_Sport1)
         self.channels_menu.addAction(a)
         self.channel_list.append("Sport 1")
-        
+        print("Stream URLs geholt!")
+        self.mediaPlayer.show_text("Stream URLs aktualisiert", duration="4000", level=None) 
         #############################
         
         if self.recording_enabled:
@@ -943,5 +949,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     locale.setlocale(locale.LC_NUMERIC, 'C')
     mainWin = MainWindow()
-    mainWin.show()
     sys.exit(app.exec_())
