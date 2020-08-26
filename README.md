@@ -127,7 +127,7 @@ Der Start eines solchen Streams dauert allerdings etwas länger, ist aber ruckel
 
 ### Download App
 
-[Download 64bit App Ubuntu/Mint - neue Version :de:](https://www.dropbox.com/s/mklr44bcu92kc1g/TVPlayer2_64_deutsch.tar.gz?dl=1)
+[Download 64bit App Ubuntu/Mint - neue Version :de:](https://mega.nz/file/3CBWXQLT#seUTPRyCLwcHl56t6PSN44UpS4PcByYrrSOLTQoTtaA)
 
 * letztes Update 20.August 2020 23:30 :new:
 
