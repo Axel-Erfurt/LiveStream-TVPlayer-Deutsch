@@ -122,14 +122,18 @@ TVPlayer2mpv.py ist eine Version mit mpv als Player die zusätzlich python-mpv b
 
 ```pip3 install python-mpv```
 
+und eventuell libmv
+
+```sudo apt-get install libmpv```
+
 Es kann die neuen ZDF Streams wo Bild und Ton auf getrennten URLs gesendet werden besser verarbeiten.
 Der Start eines solchen Streams dauert allerdings etwas länger, ist aber ruckelfrei
 
 ### Download App
 
-[Download 64bit App Ubuntu/Mint - neue Version :de:](https://mega.nz/file/3CBWXQLT#seUTPRyCLwcHl56t6PSN44UpS4PcByYrrSOLTQoTtaA)
+[Download 64bit App Ubuntu/Mint - neue Version :de:](https://www.dropbox.com/s/i6bn16d8pyes5a6/TVPlayer2_64_deutsch.tar.gz?dl=1)
 
-[Download 64bit App Ubuntu/Mint - neue Version MPV:de:](https://drive.google.com/uc?export=download&id=1SU1oSpHiAQkq2jxzIVt7AEcYYS7nOu7h)
+[Download 64bit App Ubuntu/Mint - neue Version MPV:de:](https://www.dropbox.com/s/48fm0tfun9c1x96/TVPlayer2_mpv.tar.gz?dl=1)
 
 * letztes Update 26.August 2020 22:50 Uhr :new:
 
