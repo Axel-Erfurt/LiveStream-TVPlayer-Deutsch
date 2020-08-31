@@ -15,6 +15,7 @@ from requests import get, post, request
 import time
 from datetime import datetime
 import locale
+from subprocess import check_output, STDOUT, CalledProcessError
 
 mytv = "tv-symbolic"
 mybrowser = "video-television"
@@ -64,7 +65,8 @@ class Tagesprogramm():
 
 class URLGrabber():
     def __init__(self):
-        self.channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", "ndr", "dw", "wdr", "arte", "3sat", "kika", "orf", "sf"]
+        self.channels = ["ard", "zdf", "mdr", "phoenix", "rbb", "br", "hr", "sr", "swr", 
+                        "ndr", "dw", "wdr", "arte", "3sat", "kika", "orf", "sf"]
         self.chList = []
         self.urlList = []
         self.menuList = []
@@ -108,6 +110,23 @@ class URLGrabber():
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        
+        check = self.check_libmpv("libmpv")
+        if not check:
+            print("libmpv nicht gefunden\n")
+            self.msgbox("libmpv nicht gefunden\nBenutze 'sudo apt-get install libmpv1'")
+            sys.exit()
+        else:
+            print("libmpv gefunden")
+            
+        mpv_check = self.check_mpv("mpv")
+        if not mpv_check:
+            print("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
+            self.msgbox("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
+            sys.exit()
+        else:
+            print("python-mpv gefunden")
+        
         self.setAttribute(Qt.WA_NoSystemBackground, True)
         self.setStyleSheet("QMainWindow {background-color: 'black';}")
         self.osd_font_size = 28
@@ -159,7 +178,9 @@ class MainWindow(QMainWindow):
                            osd_color='#d3d7cf',
                            osd_blur=2,
                            osd_bold=True,
-                           wid=str(int(self.container.winId())), config=False)
+                           wid=str(int(self.container.winId())), 
+                           config=False, 
+                           profile="gpu-hq")
                          
         self.mediaPlayer.set_loglevel('fatal')
         self.mediaPlayer.cursor_autohide = 2000
@@ -222,6 +243,35 @@ class MainWindow(QMainWindow):
         self.pList = mg.grab_urls()
             
         self.createMenu()
+        
+        
+    def check_libmpv(self, mlib):
+        cmd =  f'ldconfig -p | grep {mlib}'
+        
+        try:
+            result = check_output(cmd, stderr=STDOUT, shell=True).decode("utf-8")
+        except CalledProcessError:
+            return False
+            
+        if not mlib in result:
+            return False
+        else:
+            return True
+            
+    def check_mpv(self, mlib):
+        cmd =  f'pip3 list | grep {mlib}'
+        
+        try:
+            result = check_output(cmd, stderr=STDOUT, shell=True).decode("utf-8")
+            
+            if not mlib in result:
+                return False
+            else:
+                return True
+            
+        except CalledProcessError as exc:
+            result = exc.output
+            return False
         
     def logger(self, loglevel, component, message):
         print('[{}] {}: {}'.format(loglevel, component, message), file=sys.stderr)
@@ -394,7 +444,8 @@ class MainWindow(QMainWindow):
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
         programm = []
 
-        pr = request(method='GET', url = url).text.partition(".</H3>")[2].partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", "")
+        pr = (request(method='GET', url = url).text.partition(".</H3>")[2]
+                    .partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", ""))
 
         for ch in channels:
             x = int(pr.find(ch))
@@ -406,12 +457,15 @@ class MainWindow(QMainWindow):
         
     def tv_programm_later(self):
         self.mediaPlayer.osd_font_size = self.osd_font_size
-        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
+        channels = ['Das Erste', 'ZDF', 'ZDFinfo', 'ZDFneo', 'MDR', 'Phoenix', 
+                    'RBB', 'BR', 'HR', 'SWR', 'NDR', 'WDR', 'Arte', '3sat', 'ARD alpha', 
+                    'Sport 1', 'ORF 1', 'ORF 2', 'ORF 3', 'ORF Sport', 'tagesschau24', 'One ,']
 
         url = "https://www.hoerzu.de/text/tv-programm/gleich.php"
         programm = []
 
-        pr = request(method='GET', url = url).text.partition(".</H3>")[2].partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", "")
+        pr = (request(method='GET', url = url).text.partition(".</H3>")[2]
+            .partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", ""))
 
         for ch in channels:
             x = int(pr.find(ch))
@@ -594,6 +648,12 @@ class MainWindow(QMainWindow):
             ch_name = "ZDFneo"
         if "ONE" in ch_name:
             ch_name = "One ,"
+        if ch_name == "SR":
+            ch_name = "SWR"
+        if "ARTE" in ch_name:
+            ch_name = "Arte"
+        if "ORF" in ch_name:
+            ch_name = ch_name.replace("-", " ")
         if "3Sat" in ch_name or "3 Sat" in ch_name:
             ch_name = "3sat"
         if "kika" in ch_name:
@@ -602,16 +662,19 @@ class MainWindow(QMainWindow):
         url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
         programm = []
 
-        pr = request(method='GET', url = url).text.partition(".</H3>")[2].partition("nach oben")[0][1:].replace("* ", "").replace("* ", "").replace(" .", "")
+        pr = (request(method='GET', url = url).text.partition(".</H3>")[2]
+                        .partition("nach oben")[0][1:].replace("* ", "")
+                        .replace("* ", "").replace(" .", ""))
 
         x = int(pr.find(ch_name))
-        line = pr[x:].partition("</a>")[0].replace(">", "").replace(",", " - ")
+        line = pr[x:].partition("Uhr")[0].replace(",", " - ")
+        #print("line", line)
         if not line == "":
             programm.append(line.replace(f"{ch_name}  -  ", ''))
         
         now = str(datetime.now())[11:16]
         msg = '\n'.join(programm)
-        msg = f"{now}\n{msg}"
+        msg = f"{now}\n{msg}Uhr"
         print(msg)
         self.mediaPlayer.osd_font_size = 40
         self.mediaPlayer.show_text(msg, duration="7000", level=None)
@@ -655,7 +718,7 @@ class MainWindow(QMainWindow):
             print("kein Fullscreen")
         else:
             self.rect = self.geometry()
-            self.showMaximized()
+            self.showFullScreen()
             QApplication.setOverrideCursor(Qt.ArrowCursor)
             self.fullscreen = True
             print("Fullscreen eingeschaltet")
@@ -862,7 +925,7 @@ class MainWindow(QMainWindow):
         
     def wheelEvent(self, event):
         mwidth = self.frameGeometry().width()
-        mscale = event.angleDelta().y() / 6
+        mscale = round(event.angleDelta().y() / 6)
         self.resize(mwidth + mscale, round((mwidth + mscale) / ratio))
         event.accept()
 
