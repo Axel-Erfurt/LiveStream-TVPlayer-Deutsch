@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
                            config=False, 
                            profile="libmpv") 
         # profile=xxx hier einen zum eigenen System passenden Eintrag wählen
-        # opengl-hq, sw-fast, low-latency, gpu-hq, encoding, libmpv, builtin-pseudo-gui,pseudo-gui, default	
+        # opengl-hq, sw-fast, low-latency, gpu-hq, encoding, libmpv, builtin-pseudo-gui,pseudo-gui, default    
 
                          
         self.mediaPlayer.set_loglevel('fatal')
@@ -656,6 +656,8 @@ class MainWindow(QMainWindow):
             ch_name = "SWR"
         if "ARTE" in ch_name:
             ch_name = "Arte"
+        if "Welt" in ch_name:
+            ch_name = "WELT"
         if "ORF" in ch_name:
             ch_name = ch_name.replace("-", " ")
         if "3Sat" in ch_name or "3 Sat" in ch_name:
@@ -708,6 +710,8 @@ class MainWindow(QMainWindow):
             ch_name = "SWR"
         if "ARTE" in ch_name:
             ch_name = "Arte"
+        if "Welt" in ch_name:
+            ch_name = "WELT"
         if "ORF" in ch_name:
             ch_name = ch_name.replace("-", " ")
         if "3Sat" in ch_name or "3 Sat" in ch_name:
