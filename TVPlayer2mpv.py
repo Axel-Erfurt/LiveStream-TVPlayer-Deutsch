@@ -180,7 +180,10 @@ class MainWindow(QMainWindow):
                            osd_bold=True,
                            wid=str(int(self.container.winId())), 
                            config=False, 
-                           profile="gpu-hq")
+                           profile="libmpv") 
+        # profile=xxx hier einen zum eigenen System passenden Eintrag wählen
+        # opengl-hq, sw-fast, low-latency, gpu-hq, encoding, libmpv, builtin-pseudo-gui,pseudo-gui, default	
+
                          
         self.mediaPlayer.set_loglevel('fatal')
         self.mediaPlayer.cursor_autohide = 2000
@@ -376,6 +379,7 @@ class MainWindow(QMainWindow):
         self.channel_list.append("Sport 1")
         print("Stream URLs geholt!")
         self.mediaPlayer.show_text("Stream URLs aktualisiert", duration="4000", level=None) 
+        self.getEPG()
         #############################
         
         if self.recording_enabled:
@@ -677,7 +681,51 @@ class MainWindow(QMainWindow):
         msg = f"{now}\n{msg}Uhr"
         print(msg)
         self.mediaPlayer.osd_font_size = 40
-        self.mediaPlayer.show_text(msg, duration="7000", level=None)
+        self.mediaPlayer.show_text(msg, duration="3000", level=None)
+        
+    def getEPG_detail(self):
+        print("ch =", self.channelname)
+        ch_name = self.channelname.replace(" SD", "").replace(" HD", "")
+        if ch_name == "ARD":
+            ch_name = "Das Erste"
+        if "MDR" in ch_name :
+            ch_name = "MDR"
+        if "NDR" in ch_name :
+            ch_name = "NDR"
+        if "BR" in ch_name :
+            ch_name = "BR"
+        if "Tagesschau" in ch_name:
+            ch_name = "tagesschau24"
+        if "Alpha" in ch_name:
+            ch_name = "ARD alpha"
+        if "ZDF info" in ch_name:
+            ch_name = "ZDFinfo"
+        if "ZDF neo" in ch_name:
+            ch_name = "ZDFneo"
+        if "ONE" in ch_name:
+            ch_name = "One ,"
+        if ch_name == "SR":
+            ch_name = "SWR"
+        if "ARTE" in ch_name:
+            ch_name = "Arte"
+        if "ORF" in ch_name:
+            ch_name = ch_name.replace("-", " ")
+        if "3Sat" in ch_name or "3 Sat" in ch_name:
+            ch_name = "3sat"
+        if "kika" in ch_name:
+            return
+        self.mediaPlayer.osd_font_size = 24
+        url = "https://www.hoerzu.de/text/tv-programm/jetzt.php"
+        t = get(url).content.decode("utf-8")
+
+        titel = t.partition(ch_name)[2].partition("</a>")[0].replace(",", "")[2:]
+
+        r = t.partition(ch_name)[0].rpartition('<a href="')[2].partition('">')[0]
+        link = f"https://www.hoerzu.de/text/tv-programm/{r}"
+
+        result = get(link).text.partition(ch_name)[2].partition("<p>")[2].partition("</p>")[0]
+        msg = (f'{titel}\n{result}')
+        self.mediaPlayer.show_text(msg, duration="8000", level=None)
         
     def tv_programm_tag(self):
         self.mediaPlayer.osd_font_size = self.osd_font_size
@@ -767,7 +815,7 @@ class MainWindow(QMainWindow):
         elif e.key() == Qt.Key_T:
             self.showTime()
         elif e.key() == Qt.Key_E:
-            self.getEPG()
+            self.getEPG_detail()
         elif e.key() == Qt.Key_W:
             self.record_without_timer()
         elif e.key() == Qt.Key_C:
