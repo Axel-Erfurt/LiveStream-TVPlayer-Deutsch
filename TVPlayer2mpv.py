@@ -133,6 +133,7 @@ class MainWindow(QMainWindow):
         self.colorDialog = None
         self.settings = QSettings("TVPlayer2", "settings")
         self.own_list = []
+        self.pluto_list = []
         self.own_key = 0
         self.default_key = 0
         self.default_list = []
@@ -149,6 +150,7 @@ class MainWindow(QMainWindow):
         self.myARD = ""
         self.channelname = ""
         self.mychannels = []
+        self.plutochannels = []
         self.channels_menu = QMenu()
 
         self.processR = QProcess()
@@ -189,13 +191,21 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.cursor_autohide = 2000
         
         self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
-        print(self.own_file)
+        #print(self.own_file)
         if os.path.isfile(self.own_file):
             self.mychannels = open(self.own_file).read()
             ### remove empty lines
             self.mychannels = os.linesep.join([s for s in self.mychannels.splitlines() if s])
             with open(self.own_file, 'w') as f:
                 f.write(self.mychannels)
+                
+        self.pluto_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/pluto.txt")
+        if os.path.isfile(self.pluto_file):
+            self.plutochannels = open(self.pluto_file).read()
+            ### remove empty lines
+            self.plutochannels = os.linesep.join([s.replace("Pluto TV ", "").replace("Pluto TV", "") for s in self.plutochannels.splitlines() if s])
+            with open(self.pluto_file, 'w') as f:
+                f.write(self.plutochannels)
 
         self.fullscreen = False
 
@@ -373,6 +383,18 @@ class MainWindow(QMainWindow):
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
                 myMenu.addAction(a)
+                
+        myPlutoMenu = self.channels_menu.addMenu("Pluto TV")
+        myPlutoMenu.setIcon(QIcon.fromTheme(mytv))
+        if len(self.plutochannels) > 0:
+            for ch in sorted(self.plutochannels.splitlines()):
+                name = ch.partition(",")[0]
+                url = ch.partition(",")[2]
+                self.pluto_list.append(f"{name},{url}")
+                a = QAction(name, self, triggered=self.playPlutoTV)
+                a.setIcon(QIcon.fromTheme(mybrowser))
+                a.setData(url)
+                myPlutoMenu.addAction(a)
 
         a = QAction(QIcon.fromTheme(mybrowser), "Sport1 Live", self, triggered=self.play_Sport1)
         self.channels_menu.addAction(a)
@@ -917,6 +939,13 @@ class MainWindow(QMainWindow):
             self.mediaPlayer.play(self.link)
             self.default_key = self.channel_list.index(self.channelname)
             self.getEPG()
+        else:
+            self.channelname = "Sport 1"
+            self.link = "https://streaming-s1free.sport1.de/fEMIz1JST5BxcP0L_sT0Ow==,1608309081/ls-45420-1/tracks-v1a1/mono.m3u8"
+            print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
+            self.mediaPlayer.play(self.link)
+            self.default_key = self.channel_list.index(self.channelname)
+            self.getEPG()
 
     def playTV(self):
         action = self.sender()
@@ -930,6 +959,20 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.play(self.link)
         #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
         self.getEPG()
+        
+    def playPlutoTV(self):
+        action = self.sender()
+        self.link = action.data().replace("\n", "")
+        self.channelname = action.text()
+        if self.channelname in self.pluto_list:
+            self.default_key = self.pluto_list.index(self.channelname)
+        else:
+            self.own_key = self.pluto_list.index(f"{self.channelname},{self.link}")
+        print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
+        self.mediaPlayer.show_text(self.channelname, duration="10000", level=None)
+        self.mediaPlayer.play(self.link)
+        #self.mediaPlayer.show_text(self.channelname, duration="8000", level=None)
+        #self.getEPG()
         
 
     def play_own(self, channel):
