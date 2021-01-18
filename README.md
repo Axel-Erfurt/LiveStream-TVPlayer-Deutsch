@@ -7,7 +7,7 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 ### Voraussetzungen
 
-- python3
+- [python3](https://wiki.ubuntuusers.de/Python/) >= 3.6
 - PyQt5
 - [mpv](https://wiki.ubuntuusers.de/mpv/)
 - [ffmpeg](https://wiki.ubuntuusers.de/FFmpeg/) (zum Aufnehmen des TV Streams)
