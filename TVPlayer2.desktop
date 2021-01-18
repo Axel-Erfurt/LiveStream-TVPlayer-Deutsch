@@ -3,10 +3,9 @@ Version=1.0
 Type=Application
 Name=TVPlayer2
 Comment=Fernsehen
-Icon=icon2
-Exec=sh -c  "python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2mpv.py"
-Categories=Video;AudioVideo;Player
-StartupNotify=True
-Terminal=False
-
+Icon=tvplayer2_1
+Exec=sh -c  "cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2mpv.py"
+Categories=Video
+StartupNotify=false
+Terminal=false
 Name[de_DE]=TVPlayer2
