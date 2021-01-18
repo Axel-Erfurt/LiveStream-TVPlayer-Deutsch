@@ -9,7 +9,8 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 - python3
 - PyQt5
-- ffmpeg (zum Aufnehmen des TV Streams)
+- [mpv](https://wiki.ubuntuusers.de/mpv/)
+- [ffmpeg](https://wiki.ubuntuusers.de/FFmpeg/) (zum Aufnehmen des TV Streams)
 
 ### PyQt5
 
@@ -18,6 +19,13 @@ PyQt5 Abhängige Pakete kann man über die Paketquellen installieren mit
 ```shell
 sudo apt-get install python3-pyqt5
 ```
+
+### mpv
+
+```shell
+sudo apt-get install mpv
+```
+
 
 ### Installation TVPlayer2
 
@@ -96,7 +104,9 @@ In diesem Menu liegen dann alle Sender die in der Datei gespeichert sind.
 
 ### libmpv
 
-```sudo apt-get install libmpv```
+```shell
+sudo apt-get install libmpv
+```
 
 
 ### Download App
