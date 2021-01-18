@@ -1,10 +1,5 @@
 # LiveStream-TVPlayer-Deutsch :de:
 
-> **Wer es schon installiert hat und seine alten Kanäle (ohne ÖR) aus tv_listen übernehmen möchte macht mit diesem Befehl ein Update.**
-
-```shell
-cd ~/Downloads && echo "Download ..." && wget https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/TVPlayer2Update.sh && chmod +x ./TVPlayer2Update.sh && echo "Update ausführen ..." && ./TVPlayer2Update.sh
-```
 
 ![screenshot](https://github.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/blob/master/screenshot.png)
 
@@ -14,9 +9,7 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 - python3
 - PyQt5
-- streamlink (zum Aufnehmen des TV Streams)
-- gstreamer
-- python-mpv (für die mpv Version TVPlayer2mpv.py)
+- ffmpeg (zum Aufnehmen des TV Streams)
 
 ### PyQt5
 
@@ -32,11 +25,6 @@ Zur Nutzung müssen noch folgende zusätzliche Abhängigkeiten installiert werde
 
 > sudo apt-get install gstreamer1.0-vaapi libvdpau-va-gl1 gstreamer1.0-libav 
 
-### streamlink
-
-zur Aufnahme des aktuellen Senders (optional)
-
-> sudo apt-get install streamlink 
 
 ### Installation TVPlayer2
 
@@ -56,7 +44,7 @@ Aus dem Startmenu (TVPlayer2)
 oder im Terminal mit
 
 ```shell
-cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2.py
+cd ~/.local/share/LiveStream-TVPlayer-master && python3 ./TVPlayer2mpv.py
 ```
 
 ### Deinstallation
@@ -79,29 +67,25 @@ Die Bedienung erfolgt über das Kontextmenu oder Shortcuts.
 
 Im Kontextmenu erscheinen die Sender in SD Auflösung (640x360). Im Submenu HD erscheinen die Sender in der Auflösung (1280x720)
 
-Wenn streamlink vorhanden ist kann mit oder ohne Timer aufgenommen werden.
+Wenn ffmpeg vorhanden ist kann mit oder ohne Timer aufgenommen werden.
 
-Im Ordner ~/.local/share/LiveStream-TVPlayer-master/tv_listen können m3u8 Playlisten hinzugefügt ode entfernt werden.
+Im Ordner ~/.local/share/LiveStream-TVPlayer-master/ können Playlisten hinzugefügt oder entfernt werden.
 
-* Zum Entfernen eines Sender einfach die m3u8 Datei löschen.
+Sie müssen die Dateiendung .txt haben.
 
-Die m3u8 Datei sollte das übliche Format haben.
+Die .txt Datei sollte das übliche Format haben. *Name,URL*
 
 Beispiel:
 
 ```
-#EXTM3U
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=184000,RESOLUTION=320x180,CODECS="avc1.66.30, mp4a.40.2"
-http://daserstehdde-lh.akamaihd.net/i/daserstehd_de@629196/index_184_av-p.m3u8?sd=10&rebase=on
-#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3776000,RESOLUTION=1280x720,CODECS="avc1.64001f, mp4a.40.2"
-http://daserstehdde-lh.akamaihd.net/i/daserstehd_de@629196/index_3776_av-b.m3u8?sd=10&rebase=on
+ARD,http://mcdn.daserste.de/daserste/de/master.m3u8
 ```
 
-Der Dateiname wird zum Menupunkt, z.B. zdf info.m3u8 erscheint als ZDF INFO im Menu.
+Der Dateiname wird zum Menupunkt, z.B. Favoriten.txt erscheint als Favoriten im Menu.
 
-Über das Kontextmenü Sender aktualisieren können die Sender der öffentlich rechtlichen deutschen Sender aktualisiert werden.
+In diesem Menu liegen dann alle Sender die in der Datei gespeichert sind.
 
-Dazu werden mittels der MediathekView API die aktuellen Links geholt.
+
 
 ### Shortcuts
 
@@ -117,17 +101,10 @@ Dazu werden mittels der MediathekView API die aktuellen Links geholt.
 - ↑ 	lauter
 - ↓ 	leiser 
 
-### mpv Version
-TVPlayer2mpv.py ist eine Version mit mpv als Player die zusätzlich python-mpv benötigt.
-
-```pip3 install python-mpv```
-
-und eventuell libmv
+### libmpv
 
 ```sudo apt-get install libmpv```
 
-Es kann die neuen ZDF Streams wo Bild und Ton auf getrennten URLs gesendet werden besser verarbeiten.
-Der Start eines solchen Streams dauert allerdings etwas länger, ist aber ruckelfrei
 
 ### Download App
 
