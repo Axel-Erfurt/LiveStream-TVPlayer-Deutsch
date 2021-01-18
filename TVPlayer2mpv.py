@@ -928,27 +928,6 @@ class MainWindow(QMainWindow):
                 if self.channelname in self.channel_list:
                     self.default_key = self.channel_list.index(self.channelname)
 
-    def play_Sport1(self):
-        url = "https://tv.sport1.de/sport1/"
-        r = get(url)
-        myurl = r.text.partition('file: "')[2].partition('"')[0].replace("\n", "")
-        print("grabbed url Sport1:", myurl)
-        if not myurl =="":
-            self.channelname = "Sport 1"
-            self.link = myurl
-            print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
-            self.mediaPlayer.play(self.link)
-            self.mediaPlayer.wait_until_playing()
-            self.default_key = self.channel_list.index(self.channelname)
-            self.getEPG()
-        else:
-            self.channelname = "Sport 1"
-            self.link = "https://streaming-s1free.sport1.de/fEMIz1JST5BxcP0L_sT0Ow==,1608309081/ls-45420-1/tracks-v1a1/mono.m3u8"
-            print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
-            self.mediaPlayer.play(self.link)
-            self.mediaPlayer.wait_until_playing()
-            self.default_key = self.channel_list.index(self.channelname)
-            self.getEPG()
 
     def playTV(self):
         action = self.sender()
@@ -960,7 +939,7 @@ class MainWindow(QMainWindow):
             self.own_key = self.own_list.index(f"{self.channelname},{self.link}")
         print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
         self.mediaPlayer.play(self.link)
-        self.mediaPlayer.wait_until_playing()
+        #self.mediaPlayer.wait_until_playing()
         self.getEPG()
         
 
@@ -971,7 +950,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.own_list[channel].split(",")[0]
             print("eigener Sender:", self.channelname, "\nURL:", self.link)
             self.mediaPlayer.play(self.link)
-            self.mediaPlayer.wait_until_playing()
+            #self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             print(f"Kanal {channel} ist nicht vorhanden")
@@ -984,7 +963,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
-            self.mediaPlayer.wait_until_playing()
+            #self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             self.play_next(0)
@@ -996,7 +975,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
-            self.mediaPlayer.wait_until_playing()
+            #self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             self.play_next(len(self.default_list))
