@@ -111,6 +111,16 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         
+        # lists
+        self.file_list = []
+        for entry in os.scandir(os.path.dirname(sys.argv[0])):
+            if entry.is_file():
+                if entry.name.endswith(".txt") and not entry.name == "mychannels.txt":
+                    self.file_list.append(entry.name)
+        self.file_list.sort(key=str.lower)
+        flist = '\n'.join(self.file_list)
+        print(f'gefundene Listen:\n{flist}')
+        
         check = self.check_libmpv("libmpv")
         if not check:
             print("libmpv nicht gefunden\n")
@@ -133,7 +143,6 @@ class MainWindow(QMainWindow):
         self.colorDialog = None
         self.settings = QSettings("TVPlayer2", "settings")
         self.own_list = []
-        self.pluto_list = []
         self.own_key = 0
         self.default_key = 0
         self.default_list = []
@@ -150,7 +159,6 @@ class MainWindow(QMainWindow):
         self.myARD = ""
         self.channelname = ""
         self.mychannels = []
-        self.plutochannels = []
         self.channels_menu = QMenu()
 
         self.processR = QProcess()
@@ -191,21 +199,12 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.cursor_autohide = 2000
         
         self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
-        #print(self.own_file)
         if os.path.isfile(self.own_file):
             self.mychannels = open(self.own_file).read()
             ### remove empty lines
             self.mychannels = os.linesep.join([s for s in self.mychannels.splitlines() if s])
             with open(self.own_file, 'w') as f:
                 f.write(self.mychannels)
-                
-        self.pluto_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/pluto.txt")
-        if os.path.isfile(self.pluto_file):
-            self.plutochannels = open(self.pluto_file).read()
-            ### remove empty lines
-            self.plutochannels = os.linesep.join([s.replace("Pluto TV ", "").replace("Pluto TV", "") for s in self.plutochannels.splitlines() if s])
-            with open(self.pluto_file, 'w') as f:
-                f.write(self.plutochannels)
 
         self.fullscreen = False
 
@@ -383,22 +382,23 @@ class MainWindow(QMainWindow):
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
                 myMenu.addAction(a)
-                
-        myPlutoMenu = self.channels_menu.addMenu("Pluto TV")
-        myPlutoMenu.setIcon(QIcon.fromTheme(mytv))
-        if len(self.plutochannels) > 0:
-            for ch in sorted(self.plutochannels.splitlines()):
+        
+        ### andere Listen
+        for x in range(len(self.file_list)):
+            newMenu = self.channels_menu.addMenu(os.path.splitext(os.path.basename(self.file_list[x]))[0])
+            newMenu.setIcon(QIcon.fromTheme(mytv))
+            channelList = open(self.file_list[x], 'r').read().splitlines()
+            for ch in channelList:
                 name = ch.partition(",")[0]
                 url = ch.partition(",")[2]
-                self.pluto_list.append(f"{name},{url}")
-                a = QAction(name, self, triggered=self.playPlutoTV)
+                self.channel_list.append(f"{name},{url}")
+                self.own_list.append(f"{name},{url}")
+                a = QAction(name, self, triggered=self.playTV)
                 a.setIcon(QIcon.fromTheme(mybrowser))
                 a.setData(url)
-                myPlutoMenu.addAction(a)
+                newMenu.addAction(a)            
 
-        a = QAction(QIcon.fromTheme(mybrowser), "Sport1 Live", self, triggered=self.play_Sport1)
-        self.channels_menu.addAction(a)
-        self.channel_list.append("Sport 1")
+
         print("Stream URLs geholt!")
         self.mediaPlayer.show_text("Stream URLs aktualisiert", duration="4000", level=None) 
         self.getEPG()
@@ -542,6 +542,7 @@ class MainWindow(QMainWindow):
                 print("Die Datei " + self.outfile + " existiert nicht") 
             self.recname = self.channelname
             print("Aufnahme in /tmp")
+            self.mediaPlayer.show_text("Aufnahme ohne Timer", duration="3000", level=None) 
             self.is_recording = True
             cmd = f'ffmpeg -loglevel quiet -stats -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
             print(cmd)
@@ -574,6 +575,7 @@ class MainWindow(QMainWindow):
         cmd = f'timeout {str(self.tout)} ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
         print(cmd)
         print("Aufnahme in /tmp mit Timeout: " + str(self.tout))
+        self.mediaPlayer.show_text(f"Aufnahme mit Timer {str(self.tout)}", duration="3000", level=None) 
         self.is_recording = True
         self.processR.start(cmd)
 ################################################################
@@ -696,7 +698,6 @@ class MainWindow(QMainWindow):
 
         x = int(pr.find(ch_name))
         line = pr[x:].partition("Uhr")[0].replace(",", " - ")
-        #print("line", line)
         if not line == "":
             programm.append(line.replace(f"{ch_name}  -  ", ''))
         
@@ -937,6 +938,7 @@ class MainWindow(QMainWindow):
             self.link = myurl
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
+            self.mediaPlayer.wait_until_playing()
             self.default_key = self.channel_list.index(self.channelname)
             self.getEPG()
         else:
@@ -944,6 +946,7 @@ class MainWindow(QMainWindow):
             self.link = "https://streaming-s1free.sport1.de/fEMIz1JST5BxcP0L_sT0Ow==,1608309081/ls-45420-1/tracks-v1a1/mono.m3u8"
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
+            self.mediaPlayer.wait_until_playing()
             self.default_key = self.channel_list.index(self.channelname)
             self.getEPG()
 
@@ -957,22 +960,8 @@ class MainWindow(QMainWindow):
             self.own_key = self.own_list.index(f"{self.channelname},{self.link}")
         print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
         self.mediaPlayer.play(self.link)
-        #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+        self.mediaPlayer.wait_until_playing()
         self.getEPG()
-        
-    def playPlutoTV(self):
-        action = self.sender()
-        self.link = action.data().replace("\n", "")
-        self.channelname = action.text()
-        if self.channelname in self.pluto_list:
-            self.default_key = self.pluto_list.index(self.channelname)
-        else:
-            self.own_key = self.pluto_list.index(f"{self.channelname},{self.link}")
-        print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
-        self.mediaPlayer.show_text(self.channelname, duration="10000", level=None)
-        self.mediaPlayer.play(self.link)
-        #self.mediaPlayer.show_text(self.channelname, duration="8000", level=None)
-        #self.getEPG()
         
 
     def play_own(self, channel):
@@ -982,7 +971,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.own_list[channel].split(",")[0]
             print("eigener Sender:", self.channelname, "\nURL:", self.link)
             self.mediaPlayer.play(self.link)
-            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             print(f"Kanal {channel} ist nicht vorhanden")
@@ -995,7 +984,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
-            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             self.play_next(0)
@@ -1007,7 +996,7 @@ class MainWindow(QMainWindow):
             self.channelname = self.default_list[channel].split(",")[0]
             print(f"aktueller Sender: {self.channelname}\nURL: {self.link}")
             self.mediaPlayer.play(self.link)
-            #self.mediaPlayer.show_text(self.channelname, duration="5000", level=None)
+            self.mediaPlayer.wait_until_playing()
             self.getEPG()
         else:
             self.play_next(len(self.default_list))
