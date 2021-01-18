@@ -34,15 +34,6 @@ then
 else
     echo "$rf nicht gefunden"
 fi
-desktopfile=$HOME/.local/share/applications/TVPlayer2.desktop
-if [ -e "$desktopfile" ]
-then
-    echo "$desktopfile ist schon vorhanden"
-else
-    echo "$desktopfile nicht gefunden"
-    cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
-fi
+cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 mkdir -p ~/.icons && cp ~/.local/share/LiveStream-TVPlayer-master/icon2.png ~/.icons/ 
 rm ~/Downloads/TVPlayerInstall.sh
-#echo "TVPlayer2 Test starten ... "
-#python3 ~/.local/share/LiveStream-TVPlayer-master/TVPlayer2.py
