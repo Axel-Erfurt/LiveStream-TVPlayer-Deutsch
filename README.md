@@ -16,15 +16,8 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 PyQt5 Abhängige Pakete kann man über die Paketquellen installieren mit
 
 ```shell
-sudo apt-get install python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins
+sudo apt-get install python3-pyqt5
 ```
-
-### Gstreamer
-
-Zur Nutzung müssen noch folgende zusätzliche Abhängigkeiten installiert werden.
-
-> sudo apt-get install gstreamer1.0-vaapi libvdpau-va-gl1 gstreamer1.0-libav 
-
 
 ### Installation TVPlayer2
 
