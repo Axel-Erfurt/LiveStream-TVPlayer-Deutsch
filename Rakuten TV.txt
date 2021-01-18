@@ -1,0 +1,4 @@
+Comedy Movies,https://rakuten-comedymovies-3-de.samsung.wurl.com/manifest/playlist.m3u8
+Action Movies,https://rakuten-actionmovies-3-de.samsung.wurl.com/manifest/playlist.m3u8
+Drama,https://rakuten-tvshows-3-de.samsung.wurl.com/manifest/playlist.m3u8
+Spotlight,https://rakuten-spotlight-3-de.samsung.wurl.com/manifest/playlist.m3u8
