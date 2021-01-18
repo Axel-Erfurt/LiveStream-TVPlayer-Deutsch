@@ -107,14 +107,3 @@ In diesem Menu liegen dann alle Sender die in der Datei gespeichert sind.
 ```shell
 sudo apt-get install libmpv
 ```
-
-
-### Download App
-
-[Download 64bit App Ubuntu/Mint - neue Version :de:](https://www.dropbox.com/s/i6bn16d8pyes5a6/TVPlayer2_64_deutsch.tar.gz?dl=1)
-
-[Download 64bit App Ubuntu/Mint - neue Version MPV:de:](https://www.dropbox.com/s/48fm0tfun9c1x96/TVPlayer2_mpv.tar.gz?dl=1)
-
-* letztes Update 26.August 2020 22:50 Uhr :new:
-
-entpacken und TVPlayer2 im entpackten Ordner starten.
