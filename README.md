@@ -13,3 +13,13 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 - [ffmpeg](https://wiki.ubuntuusers.de/FFmpeg/) (zum Aufnehmen des TV Streams)
 
 [Anleitung UU-Wiki](https://wiki.ubuntuusers.de/Howto/TVPlayer2/) 🇩🇪
+
+### App
+
+[Download 64bit](https://www.dropbox.com/s/isrdsdtnqj2litq/TVPlayer2mpv.zip?dl=1)
+
+entpacken
+
+```cd /Pfad/zu/TVPlayer2mpv```
+
+```./TVPLayer2mpv```
