@@ -507,14 +507,14 @@ class MainWindow(QMainWindow):
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             url = event.mimeData().urls()[0].toString()
-            print("neue URL abgelegt = ", url)
-            self.link = url
+            print(f"neue URL abgelegt: '{url}'")
+            self.link = url.strip()
             self.mediaPlayer.stop()
             self.mediaPlayer.play(self.link)
         elif event.mimeData().hasText():
-            mydrop =  event.mimeData().text()
-            if mydrop.startswith("http"):
-                print("neuer Link abgelegt = ", mydrop)
+            mydrop =  event.mimeData().text().strip()
+            if ("http") in mydrop:
+                print(f"neuer Link abgelegt: '{mydrop}'")
                 self.link = mydrop
                 self.mediaPlayer.play(self.link)
         event.acceptProposedAction()
@@ -638,7 +638,7 @@ class MainWindow(QMainWindow):
 
     def playURL(self):
         clip = QApplication.clipboard()
-        self.link = clip.text()
+        self.link = clip.text().strip()
         self.mediaPlayer.play(self.link)
 
     def handleError(self, loglevel, message):
@@ -881,7 +881,7 @@ class MainWindow(QMainWindow):
             if not self.own_key == 0:
                 self.play_own(self.own_key - 1)
         elif e.key() == Qt.Key_Up:
-            if self.mediaPlayer.volume < 100:
+            if self.mediaPlayer.volume < 160:
                 self.mediaPlayer.volume = (self.mediaPlayer.volume + 5)
                 print("Lautstärke:", self.mediaPlayer.volume)
         elif e.key() == Qt.Key_Down:
@@ -918,17 +918,6 @@ class MainWindow(QMainWindow):
                 if self.channelname in self.channel_list:
                     self.default_key = self.channel_list.index(self.channelname)
                 
-    def playTagesschau(self):
-        for x in range(len(self.default_list)):
-            line = self.default_list[x].split(",")
-            if line[0] == "ARD Tagesschau":
-                self.link = line[1]
-                self.playFromKey(self.link)
-                self.channelname = "ARD Tagesschau"
-                if self.channelname in self.channel_list:
-                    self.default_key = self.channel_list.index(self.channelname)
-
-
     def playTV(self):
         action = self.sender()
         self.link = action.data().replace("\n", "")
