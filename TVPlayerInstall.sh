@@ -1,12 +1,7 @@
 #!/bin/sh
-filename=$HOME/.local/share/LiveStream-TVPlayer-master/mychannels.txt
-if [ -e "$filename" ]
-then
-    echo "$filename gefunden, kopiere nach /tmp"
-    cp $filename /tmp/mychannels.txt
-else
-    echo "$filename nicht gefunden"
-fi
+echo "temporäres Backup anlegen"
+mkdir -p /tmp/TVPlayerBackup
+cp $HOME/.local/share/LiveStream-TVPlayer-master/*.txt /tmp/TVPlayerBackup
 sharedapps=$HOME/.local/share/applications/
 if [ -d "$sharedapps" ]
  then
@@ -26,14 +21,8 @@ sleep 1
 echo "zip Datei löschen"
 rm master.zip
 mv ~/.local/share/LiveStream-TVPlayer-Deutsch-master ~/.local/share/LiveStream-TVPlayer-master
-rf=/tmp/mychannels.txt
-if [ -e "$rf" ]
-then
-    echo "mychannels.txt wiederherstellen"
-    cp $rf $HOME/.local/share/LiveStream-TVPlayer-master/mychannels.txt
-else
-    echo "$rf nicht gefunden"
-fi
+echo "Listen wiederherstellen"
+cp /tmp/TVPlayerBackup/*.txt $HOME/.local/share/LiveStream-TVPlayer-master
 cp $HOME/.local/share/LiveStream-TVPlayer-master/TVPlayer2.desktop $HOME/.local/share/applications
 mkdir -p ~/.icons && cp ~/.local/share/LiveStream-TVPlayer-master/icon2.png ~/.icons/ 
 rm ~/Downloads/TVPlayerInstall.sh
