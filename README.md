@@ -14,6 +14,12 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 [Anleitung UU-Wiki](https://wiki.ubuntuusers.de/Howto/TVPlayer2/) 🇩🇪
 
+### Listeneditor
+
+```python3 ~/.local/share/LiveStream-TVPlayer-master/ListEditorDE.py```
+
+![editorbild](https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/listeneditor.png)
+
 ### App
 
 [Download 64bit](https://www.dropbox.com/s/isrdsdtnqj2litq/TVPlayer2mpv.zip?dl=1)
