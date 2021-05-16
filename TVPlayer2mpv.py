@@ -128,14 +128,6 @@ class MainWindow(QMainWindow):
             sys.exit()
         else:
             print("libmpv gefunden")
-            
-        #mpv_check = self.check_mpv("mpv")
-        #if not mpv_check:
-        #    print("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
-        #    self.msgbox("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
-        #    sys.exit()
-        #else:
-        #    print("python-mpv gefunden")
         
         self.setAttribute(Qt.WA_NoSystemBackground, True)
         self.setStyleSheet("QMainWindow {background-color: 'black';}")
@@ -193,14 +185,12 @@ class MainWindow(QMainWindow):
                            config=False, 
                            profile="libmpv",
                            vo="x11") 
-        # profile=xxx hier einen zum eigenen System passenden Eintrag wählen
-        # opengl-hq, sw-fast, low-latency, gpu-hq, encoding, libmpv, builtin-pseudo-gui,pseudo-gui, default    
 
                          
         self.mediaPlayer.set_loglevel('fatal')
-        self.mediaPlayer.cursor_autohide = 2000
-        
-        self.own_file = os.path.expanduser("~/.local/share/LiveStream-TVPlayer-master/mychannels.txt")
+        self.mediaPlayer.cursor_autohide = 2000       
+        self.own_file = "mychannels.txt"
+        print(self.own_file)
         if os.path.isfile(self.own_file):
             self.mychannels = open(self.own_file).read()
             ### remove empty lines
@@ -291,7 +281,8 @@ class MainWindow(QMainWindow):
         print('[{}] {}: {}'.format(loglevel, component, message), file=sys.stderr)
         
     def editOwnChannels(self):
-        QDesktopServices.openUrl(QUrl(f"file://{self.own_file}"))
+        mfile = f"{os.path.dirname(sys.argv[0])}/mychannels.txt"
+        QDesktopServices.openUrl(QUrl(mfile))
         
     def addToOwnChannels(self):
         k = "Name"
