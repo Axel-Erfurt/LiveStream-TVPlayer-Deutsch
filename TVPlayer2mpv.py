@@ -129,13 +129,13 @@ class MainWindow(QMainWindow):
         else:
             print("libmpv gefunden")
             
-        mpv_check = self.check_mpv("mpv")
-        if not mpv_check:
-            print("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
-            self.msgbox("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
-            sys.exit()
-        else:
-            print("python-mpv gefunden")
+        #mpv_check = self.check_mpv("mpv")
+        #if not mpv_check:
+        #    print("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
+        #    self.msgbox("python-mpv nicht gefunden\nBenutze 'pip3 install python-mpv'")
+        #    sys.exit()
+        #else:
+        #    print("python-mpv gefunden")
         
         self.setAttribute(Qt.WA_NoSystemBackground, True)
         self.setStyleSheet("QMainWindow {background-color: 'black';}")
@@ -160,15 +160,16 @@ class MainWindow(QMainWindow):
         self.channelname = ""
         self.mychannels = []
         self.channels_menu = QMenu()
+        
+        self.pid = None
 
         self.processR = QProcess()
-        self.processR.started.connect(self.getPID)
+        self.processR.started.connect(self.getPIDR)
         self.processR.finished.connect(self.timer_finished)
-        self.processR.finished.connect(self.recfinished)
         self.processR.isRunning = False
         
         self.processW = QProcess()
-        self.processW.started.connect(self.getPID)
+        self.processW.started.connect(self.getPIDW)
         self.processW.finished.connect(self.recfinished)
         self.processW.isRunning = False
                          
@@ -190,7 +191,8 @@ class MainWindow(QMainWindow):
                            osd_bold=True,
                            wid=str(int(self.container.winId())), 
                            config=False, 
-                           profile="libmpv") 
+                           profile="libmpv",
+                           vo="x11") 
         # profile=xxx hier einen zum eigenen System passenden Eintrag wählen
         # opengl-hq, sw-fast, low-latency, gpu-hq, encoding, libmpv, builtin-pseudo-gui,pseudo-gui, default    
 
@@ -521,7 +523,7 @@ class MainWindow(QMainWindow):
         
 
     def recfinished(self):
-        print("Aufnahme beendet 1")
+        print("Aufnahme wird beendet")
 
     def is_tool(self, name):
         tool = QStandardPaths.findExecutable(name)
@@ -530,9 +532,14 @@ class MainWindow(QMainWindow):
         else:
             return False
 
-    def getPID(self):
+    def getPIDR(self):
         print("pid", self.processR.processId())
+        self.pid = self.processR.processId()
 
+    def getPIDW(self):
+        print("pid", self.processW.processId())
+        self.pid = self.processW.processId()
+            
     def record_without_timer(self):
         if not self.recording_enabled == False:
             if QFile(self.outfile).exists:
@@ -541,14 +548,10 @@ class MainWindow(QMainWindow):
             else:
                 print("Die Datei " + self.outfile + " existiert nicht") 
             self.recname = self.channelname
-            print("Aufnahme in /tmp")
-            self.mediaPlayer.show_text("Aufnahme ohne Timer", duration="3000", level=None) 
+            print("Aufnahme in Datei /tmp/TV.mp4")
+            self.mediaPlayer.show_text("record without timer", duration="3000", level=None) 
             self.is_recording = True
-            cmd = f'ffmpeg -loglevel quiet -stats -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
-            print(cmd)
-            self.processW.isRunning = True
-            self.processW.startDetached(cmd)
-
+            self.recordChannelW()
 
     def record_with_timer(self):
         if not self.recording_enabled == False:
@@ -573,11 +576,18 @@ class MainWindow(QMainWindow):
         self.processR.isRunning = True
         self.recname = self.channelname
         cmd = f'timeout {str(self.tout)} ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
-        print(cmd)
         print("Aufnahme in /tmp mit Timeout: " + str(self.tout))
         self.mediaPlayer.show_text(f"Aufnahme mit Timer {str(self.tout)}", duration="3000", level=None) 
         self.is_recording = True
         self.processR.start(cmd)
+        
+    def recordChannelW(self):
+        self.processW.isRunning = True
+        self.recname = self.channelname
+        cmd = f'ffmpeg -y -i {self.link.replace("?sd=10&rebase=on", "")} -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 "{self.outfile}"'
+        self.mediaPlayer.show_text("Aufnahme", duration="3000", level=None) 
+        self.is_recording = True
+        self.processW.start(cmd)
 ################################################################
 
     def saveMovie(self):
@@ -604,36 +614,21 @@ class MainWindow(QMainWindow):
         print("StateR:", self.processR.state())
         print("StateW:", self.processW.state())
         if self.is_recording == True:
-            print("Aufnahme wird gestoppt")
-            QProcess().execute("killall ffmpeg")
-            if self.processR.isRunning:
-                if self.processR.state() == 2:
-                    self.processR.kill()
-                    self.processR.waitForFinished()
-                    self.is_recording = False
-                if self.processR.exitStatus() == 0:
-                    self.saveMovie()
-                    self.processR.isRunning = False
             if self.processW.isRunning:
-                if self.processW.state() == 2:
-                    self.processW.kill()
-                    self.processW.waitForFinished()
-                    self.is_recording = False
+                print("recording will be stopped")
+                cmd = f"kill -9 {self.pid}"
+                print(cmd, "(stop ffmpeg)")
+                QProcess().execute(cmd)
                 if self.processW.exitStatus() == 0:
-                    self.saveMovie()
                     self.processW.isRunning = False
+                    self.saveMovie()
         else:
-            print("es wird gerade nicht aufgenommen")
- 
-    def rec_finished(self):
-        print("Aufnahme beendet")
-        self.processR.kill()
+            print("no recording")
 
     def timer_finished(self):
-        print("Timer beendet")
+        print("Timer ended\nrecording will be stopped")
+        self.processR.isRunning = False
         self.is_recording = False
-        self.processR.kill()
-        print("Aufnahme beendet")
         self.saveMovie()
 
     def playURL(self):
