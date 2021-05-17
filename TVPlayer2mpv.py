@@ -16,6 +16,7 @@ import time
 from datetime import datetime
 import locale
 from subprocess import check_output, STDOUT, CalledProcessError
+import editor_intern
 
 mytv = "tv-symbolic"
 mybrowser = "video-television"
@@ -282,7 +283,9 @@ class MainWindow(QMainWindow):
         
     def editOwnChannels(self):
         mfile = f"{os.path.dirname(sys.argv[0])}/mychannels.txt"
-        QDesktopServices.openUrl(QUrl(mfile))
+        #QDesktopServices.openUrl(QUrl(mfile))
+        self.list_editor = editor_intern.Viewer()
+        self.list_editor.show()
         
     def addToOwnChannels(self):
         k = "Name"
