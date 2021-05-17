@@ -16,7 +16,9 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 ### Listeneditor
 
-```python3 ~/.local/share/LiveStream-TVPlayer-master/ListEditorDE.py```
+```
+python3 ~/.local/share/LiveStream-TVPlayer-master/ListEditorDE.py
+```
 
 ![editorbild](https://raw.githubusercontent.com/Axel-Erfurt/LiveStream-TVPlayer-Deutsch/master/listeneditor.png)
 
@@ -26,6 +28,10 @@ TVPlayer2 ist ein Player zum Abspielen von TV Streams.
 
 entpacken
 
-```cd /Pfad/zu/TVPlayer2mpv```
+```
+cd /Pfad/zu/TVPlayer2mpv
+```
 
-```./TVPLayer2mpv```
+```
+./TVPLayer2mpv
+```
