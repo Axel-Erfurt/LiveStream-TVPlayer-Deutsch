@@ -28,6 +28,7 @@ class Viewer(QMainWindow):
       self.lb.setDragDropMode(self.lb.InternalMove)
       self.setStyleSheet(stylesheet(self))
       self.lb.setAcceptDrops(True)
+      self.lb.itemChanged.connect(self.setChanged)
       self.setCentralWidget(self.lb)
       self.setContentsMargins(10, 10, 10, 10)
       self.statusBar().showMessage("Willkommen", 0)
