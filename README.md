@@ -33,5 +33,5 @@ cd /Pfad/zu/TVPlayer2mpv
 ```
 
 ```
-./TVPLayer2mpv
+./TVPlayer2mpv
 ```
